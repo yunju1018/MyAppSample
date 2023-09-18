@@ -5,14 +5,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="20dp"
-    tools:context=".MainActivity">
+    android:gravity="center"
+    tools:context=".biometric.Biometric_Activity">
 
     <Button
-        android:id="@+id/biometric"
-        android:layout_width="match_parent"
+        android:id="@+id/biometricLoginButton"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="생체인증"/>
+        android:padding="20dp"
+        android:text="생체 인증하기"
+        android:textSize="20sp"
+        android:visibility="visible"/>
+
 </LinearLayout>
 </layout>
