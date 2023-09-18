@@ -2,16 +2,17 @@ package com.example.myappsample.biometric;
 
 import static androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG;
 
+import android.content.Context;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
 
 import java.util.concurrent.Executor;
 
@@ -21,13 +22,12 @@ import java.util.concurrent.Executor;
 
 public class BiometricAuthManager {
     private static final String TAG = "yj : " + BiometricAuthManager.class.getSimpleName();
-
-    private static BiometricAuthManager biometricAuthManager;
-    private onBiometricAuthListener authListener;
+    private OnBiometricAuthListener authListener;
+    private Context mContext;
 
     // 생체 인증 성공 여부 콜백
-    public interface onBiometricAuthListener {
-        void authenticationResult(Boolean isSucceeded);
+    public interface OnBiometricAuthListener {
+        void authenticationResult (Boolean isSucceeded);
     }
 
     public enum eAuthStatus {
@@ -37,27 +37,23 @@ public class BiometricAuthManager {
         STATUS_ERROR               // 기타 에러
     }
 
-    public enum eBiometricAuthResult {
-        AUTH_SUCCESS,           // 생체 인증 성공
-        AUTH_FAIL,              // 생체 인증 실패
-    }
+//    public enum eBiometricAuthResult {
+//        AUTH_SUCCESS,           // 생체 인증 성공
+//        AUTH_FAIL,              // 생체 인증 실패
+//    }
+//
+//    public void setBiometricAuthListener(OnBiometricAuthListener callback) {
+//        authListener = callback;
+//    }
 
-    public void setBiometricAuthListener(onBiometricAuthListener callback) {
-        authListener = callback;
-    }
-
-    public static BiometricAuthManager getInstance() {
-        synchronized (BiometricAuthManager.class) {
-            if (biometricAuthManager == null) {
-                biometricAuthManager = new BiometricAuthManager();
-            }
-        }
-        return biometricAuthManager;
+    public BiometricAuthManager (Context context, OnBiometricAuthListener onBiometricAuthListener){
+        mContext = context;
+        authListener = onBiometricAuthListener;
     }
 
     // 생체 인증 사용 가능 여부 조회
-    public eAuthStatus canAuthenticate(AppCompatActivity activity) {
-        BiometricManager biometricManager = BiometricManager.from(activity);
+    public eAuthStatus canAuthenticate() {
+        BiometricManager biometricManager = BiometricManager.from(mContext);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             switch (biometricManager.canAuthenticate(BIOMETRIC_STRONG | BiometricManager.Authenticators.BIOMETRIC_WEAK)) {
                 case BiometricManager.BIOMETRIC_SUCCESS:
@@ -74,7 +70,7 @@ public class BiometricAuthManager {
                     return eAuthStatus.STATUS_ERROR;
             }
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return checkFingerManager(activity);
+            return checkFingerManager();
             // Android 11(API 30) 이전 인증자 유형(authenticator) BIOMETRIC_STRONG, 유형 조합이 지원 되지 않음.
             // 지문 인증 사용 가능 여부 확인 / Android 11(API 30) 이전 일부 기기 지문 미 등록 시 UNKNOWN 반환, FingerManager 사용
 
@@ -101,8 +97,8 @@ public class BiometricAuthManager {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    private eAuthStatus checkFingerManager(AppCompatActivity activity) {
-        FingerprintManager fingerPrintmanager = activity.getSystemService(FingerprintManager.class);
+    private eAuthStatus checkFingerManager() {
+        FingerprintManager fingerPrintmanager = mContext.getSystemService(FingerprintManager.class);
         // fingerPrint hardware 존재하는지, 등록된 지문이 있는지 체크
         if (fingerPrintmanager.isHardwareDetected()) {
             if (fingerPrintmanager.hasEnrolledFingerprints()) {
@@ -119,11 +115,9 @@ public class BiometricAuthManager {
     }
 
     // 생체 인증 실행
-    public void showBiometricPrompt(AppCompatActivity activity, onBiometricAuthListener authListener) {
-        this.authListener = authListener;
-
-        Executor executor = ContextCompat.getMainExecutor(activity);
-        BiometricPrompt biometricPrompt = new BiometricPrompt(activity, executor, authenticationCallback);
+    public void showBiometricPrompt() {
+        Executor executor = ContextCompat.getMainExecutor(mContext);
+        BiometricPrompt biometricPrompt = new BiometricPrompt((FragmentActivity) mContext, executor, authenticationCallback);
         biometricPrompt.authenticate(createBiometricPrompt());
     }
 

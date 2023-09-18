@@ -47,23 +47,23 @@ public class Biometric_Activity extends AppCompatActivity {
     }
 
     private void checkBioMetric() {
-        BiometricAuthManager biometricAuthManager = BiometricAuthManager.getInstance();
-        BiometricAuthManager.eAuthStatus eAuthStatus = biometricAuthManager.canAuthenticate(this);
+        BiometricAuthManager biometricAuthManager = new BiometricAuthManager(this, new BiometricAuthManager.OnBiometricAuthListener() {
+            @Override
+            public void authenticationResult(Boolean isSucceeded) {
+                if (isSucceeded) {
+                    Log.d(TAG, "생체 인증 성공");
+                    Toast.makeText(Biometric_Activity.this, "생체 인증 성공", Toast.LENGTH_SHORT).show();
+                } else {
+                    Log.d(TAG, "생체 인증 실패");
+                    Toast.makeText(Biometric_Activity.this, "생체 인증 실패", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
+        BiometricAuthManager.eAuthStatus eAuthStatus = biometricAuthManager.canAuthenticate();
         switch (eAuthStatus) {
             case STATUS_AVAILABLE:
-                biometricAuthManager.showBiometricPrompt(this, new BiometricAuthManager.onBiometricAuthListener() {
-                    @Override
-                    public void authenticationResult(Boolean isSucceeded) {
-                        if (isSucceeded) {
-                            Log.d(TAG, "생체 인증 성공");
-                            Toast.makeText(Biometric_Activity.this, "생체 인증 성공", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Log.d(TAG, "생체 인증 실패");
-                            Toast.makeText(Biometric_Activity.this, "생체 인증 실패", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+                biometricAuthManager.showBiometricPrompt();
                 break;
             case STATUS_NONE_ENROLLED:
                 offerBioEnroll();
