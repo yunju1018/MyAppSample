@@ -27,7 +27,8 @@ public class BiometricAuthManager {
 
     // 생체 인증 성공 여부 콜백
     public interface OnBiometricAuthListener {
-        void authenticationResult (Boolean isSucceeded);
+        void authenticateSuccess ();
+        void authenticateFail (int errorCode, @NonNull CharSequence errString);
     }
 
     public enum eAuthStatus {
@@ -37,25 +38,20 @@ public class BiometricAuthManager {
         STATUS_ERROR               // 기타 에러
     }
 
-//    public enum eBiometricAuthResult {
-//        AUTH_SUCCESS,           // 생체 인증 성공
-//        AUTH_FAIL,              // 생체 인증 실패
-//    }
-//
-//    public void setBiometricAuthListener(OnBiometricAuthListener callback) {
-//        authListener = callback;
-//    }
-
-    public BiometricAuthManager (Context context, OnBiometricAuthListener onBiometricAuthListener){
+    public BiometricAuthManager (Context context){
         mContext = context;
-        authListener = onBiometricAuthListener;
     }
 
     // 생체 인증 사용 가능 여부 조회
+    private boolean isBiometricsSupported() {
+        return canAuthenticate() == eAuthStatus.STATUS_AVAILABLE;
+    }
+
+    // 생체 인증 기능 지원 여부 조회
     public eAuthStatus canAuthenticate() {
         BiometricManager biometricManager = BiometricManager.from(mContext);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            switch (biometricManager.canAuthenticate(BIOMETRIC_STRONG | BiometricManager.Authenticators.BIOMETRIC_WEAK)) {
+            switch (biometricManager.canAuthenticate(BIOMETRIC_STRONG)) {
                 case BiometricManager.BIOMETRIC_SUCCESS:
                     Log.d(TAG, "BIOMETRIC_SUCCESS 인증 가능");
                     return eAuthStatus.STATUS_AVAILABLE;
@@ -70,28 +66,29 @@ public class BiometricAuthManager {
                     return eAuthStatus.STATUS_ERROR;
             }
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return checkFingerManager();
+//            return checkFingerManager();
             // Android 11(API 30) 이전 인증자 유형(authenticator) BIOMETRIC_STRONG, 유형 조합이 지원 되지 않음.
             // 지문 인증 사용 가능 여부 확인 / Android 11(API 30) 이전 일부 기기 지문 미 등록 시 UNKNOWN 반환, FingerManager 사용
 
-//            switch (biometricManager.canAuthenticate()) {
-//                case BiometricManager.BIOMETRIC_SUCCESS:
-//                    Log.d(TAG, "BIOMETRIC_SUCCESS 인증 가능");
-//                    return eAuthStatus.STATUS_AVAILABLE;
-//                case BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE:
-//                    Log.d(TAG, "BIOMETRIC_ERROR_NO_HARDWARE : 생체인식을 사용할 수 없는 기기(생체인식 센서 또는 키 가드 없음)");
-//                    return eAuthStatus.STATUS_NO_HARDWARE;
-//                case BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED:
-//                    Log.d(TAG, "BIOMETRIC_ERROR_NONE_ENROLLED : 생체인식 또는 자격 증명이 등록되지 않음");
-//                    return eAuthStatus.STATUS_NONE_ENROLLED;
-//                // 일부 단말의 경우 지문 등록이 안되어 있을 경우 UNKNOWN 반환, fingerManager 사용 시 정상 반환 됨. todo : 통일 / 예외 처리 추가 확인
-//                case BiometricManager.BIOMETRIC_STATUS_UNKNOWN:   // 사용자가 인증할 수 있는지 여부를 확인할 수 없음
-//                    return checkFingerManager(activity);
-//                default:
-//                    Log.d(TAG, "BIOMETRIC 기타실패");
-//                    return eAuthStatus.STATUS_ERROR;
+            switch (biometricManager.canAuthenticate()) {
+                case BiometricManager.BIOMETRIC_SUCCESS:
+                    Log.d(TAG, "BIOMETRIC_SUCCESS 인증 가능");
+                    return eAuthStatus.STATUS_AVAILABLE;
+                case BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE:
+                    Log.d(TAG, "BIOMETRIC_ERROR_NO_HARDWARE : 생체인식을 사용할 수 없는 기기(생체인식 센서 또는 키 가드 없음)");
+                    return eAuthStatus.STATUS_NO_HARDWARE;
+                case BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED:
+                    Log.d(TAG, "BIOMETRIC_ERROR_NONE_ENROLLED : 생체인식 또는 자격 증명이 등록되지 않음");
+                    return eAuthStatus.STATUS_NONE_ENROLLED;
+                // 일부 단말의 경우 지문 등록이 안되어 있을 경우 UNKNOWN 반환, fingerManager 사용 시 정상 반환 됨. todo : 통일 / 예외 처리 추가 확인
+                case BiometricManager.BIOMETRIC_STATUS_UNKNOWN:   // 사용자가 인증할 수 있는지 여부를 확인할 수 없음
+                    return checkFingerManager();
+                default:
+                    Log.d(TAG, "BIOMETRIC 기타실패");
+                    return eAuthStatus.STATUS_ERROR;
 
-        } else {
+        }
+    }else {
             return eAuthStatus.STATUS_ERROR;
         }
     }
@@ -115,7 +112,8 @@ public class BiometricAuthManager {
     }
 
     // 생체 인증 실행
-    public void showBiometricPrompt() {
+    public void showBiometricPrompt(OnBiometricAuthListener onBiometricAuthListener) {
+        authListener = onBiometricAuthListener;
         Executor executor = ContextCompat.getMainExecutor(mContext);
         BiometricPrompt biometricPrompt = new BiometricPrompt((FragmentActivity) mContext, executor, authenticationCallback);
         biometricPrompt.authenticate(createBiometricPrompt());
@@ -125,14 +123,14 @@ public class BiometricAuthManager {
         @Override
         public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
             super.onAuthenticationError(errorCode, errString);
-            authListener.authenticationResult(false);
+            authListener.authenticateFail(errorCode, errString);
             Log.d(TAG, "Authentication error - errorCode : " + errorCode + " , " + "errorString : " + errString);
         }
 
         @Override
         public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
             super.onAuthenticationSucceeded(result);
-            authListener.authenticationResult(true);
+            authListener.authenticateSuccess();
             Log.d(TAG, "Authentication success - result : " + result.getAuthenticationType());
         }
 
@@ -155,9 +153,9 @@ public class BiometricAuthManager {
         promptBuilder.setTitle("생체 인증");
         promptBuilder.setDescription("생체정보로 인증해 주세요");
         promptBuilder.setNegativeButtonText("취소");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { //  안면인식 api 사용 android 11부터 지원
-            promptBuilder.setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG | BiometricManager.Authenticators.BIOMETRIC_WEAK);
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { //  안면인식 api 사용 android 11부터 지원
+//            promptBuilder.setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG);
+//        }
         promptInfo = promptBuilder.build();
         return promptInfo;
     }

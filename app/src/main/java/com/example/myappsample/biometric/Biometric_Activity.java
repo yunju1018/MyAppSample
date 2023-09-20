@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
@@ -47,26 +48,30 @@ public class Biometric_Activity extends AppCompatActivity {
     }
 
     private void checkBioMetric() {
-        BiometricAuthManager biometricAuthManager = new BiometricAuthManager(this, new BiometricAuthManager.OnBiometricAuthListener() {
-            @Override
-            public void authenticationResult(Boolean isSucceeded) {
-                if (isSucceeded) {
-                    Log.d(TAG, "생체 인증 성공");
-                    Toast.makeText(Biometric_Activity.this, "생체 인증 성공", Toast.LENGTH_SHORT).show();
-                } else {
-                    Log.d(TAG, "생체 인증 실패");
-                    Toast.makeText(Biometric_Activity.this, "생체 인증 실패", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
+        BiometricAuthManager biometricAuthManager = new BiometricAuthManager(this);
         BiometricAuthManager.eAuthStatus eAuthStatus = biometricAuthManager.canAuthenticate();
         switch (eAuthStatus) {
             case STATUS_AVAILABLE:
-                biometricAuthManager.showBiometricPrompt();
+                biometricAuthManager.showBiometricPrompt(new BiometricAuthManager.OnBiometricAuthListener(){
+                    @Override
+                    public void authenticateSuccess() {
+                        Toast.makeText(Biometric_Activity.this, "성공", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void authenticateFail(int errorCode, @NonNull CharSequence errString) {
+                        if(errorCode == 7 || errorCode == 11) {
+                            new AlertDialog.Builder(Biometric_Activity.this)
+                                    .setMessage(errString)
+                                    .setPositiveButton("확인", null)
+                                    .create()
+                                    .show();
+                        }
+                    }
+                });
                 break;
             case STATUS_NONE_ENROLLED:
-                offerBioEnroll();
+                Toast.makeText(this, "사용할 수 있는 지문이 없습니다.", Toast.LENGTH_SHORT).show();
                 break;
             case STATUS_NO_HARDWARE:
                 Toast.makeText(this, "생체 인식이 불가능한 기기 입니다.", Toast.LENGTH_SHORT).show();
