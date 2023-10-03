@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.hardware.biometrics.BiometricPrompt;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -60,7 +61,7 @@ public class Biometric_Activity extends AppCompatActivity {
 
                     @Override
                     public void authenticateFail(int errorCode, @NonNull CharSequence errString) {
-                        if(errorCode == 7 || errorCode == 11) {
+                        if(errorCode == BiometricPrompt.BIOMETRIC_ERROR_LOCKOUT || errorCode == BiometricPrompt.BIOMETRIC_ERROR_NO_BIOMETRICS) {
                             new AlertDialog.Builder(Biometric_Activity.this)
                                     .setMessage(errString)
                                     .setPositiveButton("확인", null)
@@ -71,7 +72,7 @@ public class Biometric_Activity extends AppCompatActivity {
                 });
                 break;
             case STATUS_NONE_ENROLLED:
-                Toast.makeText(this, "사용할 수 있는 지문이 없습니다.", Toast.LENGTH_SHORT).show();
+                offerBioEnroll();
                 break;
             case STATUS_NO_HARDWARE:
                 Toast.makeText(this, "생체 인식이 불가능한 기기 입니다.", Toast.LENGTH_SHORT).show();
