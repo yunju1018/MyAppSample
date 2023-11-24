@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import com.example.myappsample.biometric.Biometric_Activity;
 import com.example.myappsample.databinding.ActivityMainBinding;
+import com.example.myappsample.swipe.SwipeDeleteActivity;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
@@ -19,6 +20,11 @@ public class MainActivity extends AppCompatActivity {
 
         binding.biometric.setOnClickListener(view -> {
             Intent intent = new Intent(this, Biometric_Activity.class);
+            startActivity(intent);
+        });
+
+        binding.swipeDelete.setOnClickListener(view -> {
+            Intent intent = new Intent(this, SwipeDeleteActivity.class);
             startActivity(intent);
         });
     }
