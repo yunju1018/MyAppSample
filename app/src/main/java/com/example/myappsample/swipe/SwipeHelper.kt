@@ -14,13 +14,12 @@ import kotlin.math.abs
 import kotlin.math.max
 
 @SuppressLint("ClickableViewAccessibility")
-abstract class SwipeHelper(
-    private val recyclerView: RecyclerView) : ItemTouchHelper.SimpleCallback(   // 드래그 및 스와이프 방향으로 구성할 수 있는 기본 콜백
+abstract class SwipeHelper(private val recyclerView: RecyclerView) : ItemTouchHelper.SimpleCallback(   // 드래그 및 스와이프 방향으로 구성할 수 있는 기본 콜백
     ItemTouchHelper.ACTION_STATE_IDLE,  // 유휴(드래그 또는 스와이프가 끝났을 때)
     ItemTouchHelper.LEFT    // 스와이프 하는 동안 왼쪽 이동 허용
 ) {
     private var swipedPosition = -1
-    private val buttonsBuffer: MutableMap<Int, List<UnderlayButton>> = mutableMapOf()
+    private val buttonsBuffer: MutableMap<Int, List<UnderButton>> = mutableMapOf()
     private val recoverQueue = object : LinkedList<Int>() {
         override fun add(element: Int): Boolean {
             if (contains(element)) return false
@@ -51,39 +50,23 @@ abstract class SwipeHelper(
         }
     }
 
-    private fun drawButtons(
-        canvas: Canvas,
-        buttons: List<UnderlayButton>,
-        itemView: View,
-        dX: Float
-    ) {
+    private fun drawButtons(canvas: Canvas, buttons: List<UnderButton>, itemView: View, dX: Float) {
         var right = itemView.right
         buttons.forEach { button ->
             val width = button.intrinsicWidth / buttons.intrinsicWidth() * abs(dX)
             val left = right - width
-            button.draw(
-                canvas,
-                RectF(left, itemView.top.toFloat(), right.toFloat(), itemView.bottom.toFloat())
-            )
+            button.draw(canvas, RectF(left, itemView.top.toFloat(), right.toFloat(), itemView.bottom.toFloat()))
 
             right = left.toInt()
         }
     }
 
-    override fun onChildDraw(
-        c: Canvas,
-        recyclerView: RecyclerView,
-        viewHolder: RecyclerView.ViewHolder,
-        dX: Float,
-        dY: Float,
-        actionState: Int,
-        isCurrentlyActive: Boolean
-    ) {
+    override fun onChildDraw(canvas: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
         val position = viewHolder.adapterPosition
         var maxDX = dX
         val itemView = viewHolder.itemView
 
-        if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+        if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {    // 스와이프
             if (dX < 0) {
                 if (!buttonsBuffer.containsKey(position)) {
                     buttonsBuffer[position] = instantiateUnderlayButton(position)
@@ -92,26 +75,14 @@ abstract class SwipeHelper(
                 val buttons = buttonsBuffer[position] ?: return
                 if (buttons.isEmpty()) return
                 maxDX = max(-buttons.intrinsicWidth(), dX)
-                drawButtons(c, buttons, itemView, maxDX)
+                drawButtons(canvas, buttons, itemView, maxDX)
             }
         }
 
-        super.onChildDraw(
-            c,
-            recyclerView,
-            viewHolder,
-            maxDX,
-            dY,
-            actionState,
-            isCurrentlyActive
-        )
+        super.onChildDraw(canvas, recyclerView, viewHolder, maxDX, dY, actionState, isCurrentlyActive)
     }
 
-    override fun onMove(
-        recyclerView: RecyclerView,
-        viewHolder: RecyclerView.ViewHolder,
-        target: RecyclerView.ViewHolder
-    ): Boolean {
+    override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
         return false
     }
 
@@ -122,14 +93,14 @@ abstract class SwipeHelper(
         recoverSwipedItem()
     }
 
-    abstract fun instantiateUnderlayButton(position: Int): List<UnderlayButton>
+    abstract fun instantiateUnderlayButton(position: Int): List<UnderButton>
 
     //region UnderlayButton
     interface UnderlayButtonClickListener {
         fun onClick()
     }
 
-    class UnderlayButton(
+    class UnderButton(
         private val context: Context,
         private val title: String,
         textSize: Float,
@@ -184,7 +155,7 @@ abstract class SwipeHelper(
     //endregion
 }
 
-private fun List<SwipeHelper.UnderlayButton>.intrinsicWidth(): Float {
+private fun List<SwipeHelper.UnderButton>.intrinsicWidth(): Float {
     if (isEmpty()) return 0.0f
     return map {
         it.intrinsicWidth

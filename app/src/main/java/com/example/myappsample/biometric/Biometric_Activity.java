@@ -22,6 +22,13 @@ import androidx.databinding.DataBindingUtil;
 import com.example.myappsample.R;
 import com.example.myappsample.databinding.ActivityBiometricBinding;
 
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+
+import javax.crypto.SecretKey;
+
 public class Biometric_Activity extends AppCompatActivity {
 
     private static final String TAG = "yj : " + Biometric_Activity.class.getSimpleName();
@@ -32,7 +39,17 @@ public class Biometric_Activity extends AppCompatActivity {
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
                     Log.d(TAG, "지문 등록 완료");
-                    checkBioMetric();
+                    try {
+                        checkBioMetric();
+                    } catch (InvalidKeyException e) {
+                        throw new RuntimeException(e);
+                    } catch (InvalidAlgorithmParameterException e) {
+                        throw new RuntimeException(e);
+                    } catch (NoSuchAlgorithmException e) {
+                        throw new RuntimeException(e);
+                    } catch (NoSuchProviderException e) {
+                        throw new RuntimeException(e);
+                    }
                 } else {
                     Toast.makeText(this, "지문 등록 실패", Toast.LENGTH_SHORT).show();
                 }
@@ -44,11 +61,16 @@ public class Biometric_Activity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_biometric);
 
         binding.biometricLoginButton.setOnClickListener(v -> {
-            checkBioMetric();
+            try {
+                checkBioMetric();
+            } catch (InvalidKeyException | InvalidAlgorithmParameterException |
+                     NoSuchAlgorithmException | NoSuchProviderException e) {
+                throw new RuntimeException(e);
+            }
         });
     }
 
-    private void checkBioMetric() {
+    private void checkBioMetric() throws InvalidKeyException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchProviderException {
         BiometricAuthManager biometricAuthManager = new BiometricAuthManager(this);
         BiometricAuthManager.eAuthStatus eAuthStatus = biometricAuthManager.canAuthenticate();
         switch (eAuthStatus) {

@@ -5,6 +5,9 @@ import static androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRON
 import android.content.Context;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
+import android.os.CancellationSignal;
+import android.security.keystore.KeyGenParameterSpec;
+import android.security.keystore.KeyProperties;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -14,7 +17,23 @@ import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+import java.util.Objects;
 import java.util.concurrent.Executor;
+import java.util.function.LongUnaryOperator;
+
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
 
 /**
  * https://android-developers.googleblog.com/2019/10/one-biometric-api-over-all-android.html?m=1
@@ -24,6 +43,14 @@ public class BiometricAuthManager {
     private static final String TAG = "yj : " + BiometricAuthManager.class.getSimpleName();
     private OnBiometricAuthListener authListener;
     private Context mContext;
+    private KeyManager keyManager;
+    private BiometricPrompt.CryptoObject bioCryptoObject;
+
+    int count = 0;
+
+    Cipher cipher;
+
+    boolean isKeyValid = true;
 
     // 생체 인증 성공 여부 콜백
     public interface OnBiometricAuthListener {
@@ -112,11 +139,21 @@ public class BiometricAuthManager {
     }
 
     // 생체 인증 실행
-    public void showBiometricPrompt(OnBiometricAuthListener onBiometricAuthListener) {
+    public void showBiometricPrompt(OnBiometricAuthListener onBiometricAuthListener) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchProviderException {
         authListener = onBiometricAuthListener;
         Executor executor = ContextCompat.getMainExecutor(mContext);
         BiometricPrompt biometricPrompt = new BiometricPrompt((FragmentActivity) mContext, executor, authenticationCallback);
+
+        keyManager.generateKey();
+
+        if (keyManager.cipherInit())
+        {
+            bioCryptoObject = new BiometricPrompt.CryptoObject(keyManager.getCipher());
+            biometricPrompt.authenticate(createBiometricPrompt(), bioCryptoObject);
+        }
+
         biometricPrompt.authenticate(createBiometricPrompt());
+
     }
 
     private final BiometricPrompt.AuthenticationCallback authenticationCallback = new BiometricPrompt.AuthenticationCallback() {
@@ -131,7 +168,6 @@ public class BiometricAuthManager {
         public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
             super.onAuthenticationSucceeded(result);
             authListener.authenticateSuccess();
-            Log.d(TAG, "Authentication success - result : " + result.getAuthenticationType());
         }
 
         @Override
@@ -160,5 +196,58 @@ public class BiometricAuthManager {
         return promptInfo;
     }
 
+//    private void generateSecretKey() throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchProviderException {
+//
+//        final KeyGenerator keyGenerator =
+//                KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore");
+//
+//        final KeyGenParameterSpec keyGenParameterSpec = new KeyGenParameterSpec.Builder("KEY_NAME",
+//                KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
+//                .setBlockModes(KeyProperties.BLOCK_MODE_GCM)                    // 암호화/복호화 시 키를 사용할 수 있는 블록 모드 세트
+//                .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)   // 암호화/복호화 시 키를 사용할 수 있는 패딩 방식
+//                .setUserAuthenticationRequired(true)                            // 사용자가 인증된 경우에만 이 키를 사용할 수 있도록 인증할지 여부를 설정
+//                .setUserAuthenticationValidityDurationSeconds(0)                // 사용자가 성공적으로 인증된 후 이 키를 사용할 수 있도록 승인되는 기간(초)을 설정
+//                .setUserAuthenticationValidWhileOnBody(false)                   // 인증 유효 기간 한도까지 장치가 사용자의 신체에서 제거될 때까지만 키 인증을 유지할지 여부를 설정
+//                .setInvalidatedByBiometricEnrollment(true)                      // 생체 인식 등록 시 이 키를 무효화해야 하는지 여부를 설정
+//                .build();
+//
+//        keyGenerator.init(keyGenParameterSpec);
+//        keyGenerator.generateKey();
+//    }
+//
+//    private void generateSecretKey(KeyGenParameterSpec keyGenParameterSpec) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException {
+//        KeyGenerator keyGenerator = KeyGenerator.getInstance(
+//                KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore");
+//        keyGenerator.init(keyGenParameterSpec);
+//        keyGenerator.generateKey();
+//    }
+//
+//    private SecretKey getSecretKey() {
+//        KeyStore keyStore = null;
+//        try {
+//            keyStore = KeyStore.getInstance("AndroidKeyStore");
+//            // Before the keystore can be accessed, it must be loaded.
+//            keyStore.load(null);
+//            return ((SecretKey)keyStore.getKey("KEY_NAME", null));
+//        } catch (KeyStoreException | UnrecoverableKeyException | CertificateException |
+//                 IOException | NoSuchAlgorithmException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+//
+//    private boolean cipherInit() {
+//        try {
+//            cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES + "/"
+//                    + KeyProperties.BLOCK_MODE_CBC + "/"
+//                    + KeyProperties.ENCRYPTION_PADDING_PKCS7);
+//
+//            SecretKey key = getSecretKey();
+//            cipher.init(Cipher.ENCRYPT_MODE, key);
+//            return true;
+//
+//        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException e) {
+//            return false;
+//        }
+//    }
 }
 

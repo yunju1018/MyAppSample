@@ -16,6 +16,12 @@
         android:text="생체인증"/>
 
     <Button
+        android:id="@+id/swipeDeleteButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="밀어서삭제하기버튼"/>
+
+    <Button
         android:id="@+id/swipeDelete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
