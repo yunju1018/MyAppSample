@@ -15,6 +15,9 @@
         android:theme="@style/Theme.MyAppSample"
         tools:targetApi="31">
         <activity
+            android:name=".popupwindow.PopupWindowActivity"
+            android:exported="false" />
+        <activity
             android:name=".swipe.SwipeDeleteButtonActivity"
             android:exported="false" />
         <activity

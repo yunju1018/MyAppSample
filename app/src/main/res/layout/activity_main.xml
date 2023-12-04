@@ -26,5 +26,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="밀어서삭제하기"/>
+
+    <Button
+        android:id="@+id/popupWindow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="popupWindow"/>
 </LinearLayout>
 </layout>

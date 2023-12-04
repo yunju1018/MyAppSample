@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import com.example.myappsample.biometric.Biometric_Activity;
 import com.example.myappsample.databinding.ActivityMainBinding;
+import com.example.myappsample.popupwindow.PopupWindowActivity;
 import com.example.myappsample.swipe.SwipeDeleteActivity;
 import com.example.myappsample.swipe.SwipeDeleteButtonActivity;
 
@@ -31,6 +32,11 @@ public class MainActivity extends AppCompatActivity {
 
         binding.swipeDelete.setOnClickListener(view -> {
             Intent intent = new Intent(this, SwipeDeleteActivity.class);
+            startActivity(intent);
+        });
+
+        binding.popupWindow.setOnClickListener(view -> {
+            Intent intent = new Intent(this, PopupWindowActivity.class);
             startActivity(intent);
         });
     }
