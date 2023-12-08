@@ -51,7 +51,8 @@ class PopupWindowActivity : AppCompatActivity() {
             width = ListPopupWindow.WRAP_CONTENT
             height = ListPopupWindow.WRAP_CONTENT
             promptPosition = ListPopupWindow.POSITION_PROMPT_BELOW
-            verticalOffset = 30
+            verticalOffset = -30
+            horizontalOffset = 24
             setAdapter(listAdapter)
         }
 

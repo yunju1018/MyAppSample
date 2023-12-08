@@ -24,6 +24,9 @@
             android:name=".swipe.SwipeDeleteActivity"
             android:exported="false" />
         <activity
+            android:name=".swipe.SwipeActionActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

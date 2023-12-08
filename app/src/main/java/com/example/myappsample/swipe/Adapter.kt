@@ -12,5 +12,8 @@ class Adapter(private val strings: ArrayList<String>) : RecyclerView.Adapter<Tex
     override fun onBindViewHolder(holder: TextViewHolder, position: Int) =
         holder.bind(strings[position])
 
-
+    fun removeAt(position: Int) {
+        strings.removeAt(position)
+        notifyItemRemoved(position)
+    }
 }

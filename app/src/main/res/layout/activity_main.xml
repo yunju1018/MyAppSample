@@ -32,5 +32,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="popupWindow"/>
+
+    <Button
+        android:id="@+id/swipeAction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="라이브러리"/>
 </LinearLayout>
 </layout>

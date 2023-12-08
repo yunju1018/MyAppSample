@@ -48,7 +48,32 @@ class SwipeDeleteActivity : AppCompatActivity() {
             )
             layoutManager = LinearLayoutManager(this@SwipeDeleteActivity)
         }
+
+        val swipeHandler = object : SwipeToDeleteCallback(this) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val adapter = binding.recyclerView.adapter as Adapter
+                adapter.removeAt(viewHolder.adapterPosition)
+                toast(viewHolder.adapterPosition.toString())
+            }
+        }
+        val itemTouchHelper = ItemTouchHelper(swipeHandler)
+
+
         itemTouchHelper.attachToRecyclerView(binding.recyclerView)
+    }
+
+
+    private fun toast(text: String) {
+        Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun makeList(): ArrayList<String> {
+        val arrayList = arrayListOf<String>()
+        for (i in 0 until 20) {
+            val str = "item $i"
+            arrayList.add(str)
+        }
+        return arrayList
     }
 
     private var itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
@@ -85,17 +110,4 @@ class SwipeDeleteActivity : AppCompatActivity() {
             swipeAdapter.notifyDataSetChanged()
         }
     })
-
-    private fun toast(text: String) {
-        Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
-    }
-
-    private fun makeList(): ArrayList<String> {
-        val arrayList = arrayListOf<String>()
-        for (i in 0 until 20) {
-            val str = "item $i"
-            arrayList.add(str)
-        }
-        return arrayList
-    }
 }
