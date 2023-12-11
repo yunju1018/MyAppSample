@@ -38,5 +38,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="라이브러리"/>
+
+    <Button
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="scroll"/>
 </LinearLayout>
 </layout>

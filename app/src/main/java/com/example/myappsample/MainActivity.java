@@ -10,6 +10,7 @@ import com.example.myappsample.biometric.Biometric_Activity;
 import com.example.myappsample.databinding.ActivityMainBinding;
 import com.example.myappsample.popupwindow.PopupWindowActivity;
 import com.example.myappsample.swipe.SwipeActionActivity;
+import com.example.myappsample.collasingtoolbar.CollasingToolbarActivity;
 import com.example.myappsample.swipe.SwipeDeleteActivity;
 import com.example.myappsample.swipe.SwipeDeleteButtonActivity;
 
@@ -43,6 +44,11 @@ public class MainActivity extends AppCompatActivity {
 
         binding.swipeAction.setOnClickListener(view -> {
             Intent intent = new Intent(this, SwipeActionActivity.class);
+            startActivity(intent);
+        });
+
+        binding.scroll.setOnClickListener(view -> {
+            Intent intent = new Intent(this, CollasingToolbarActivity.class);
             startActivity(intent);
         });
     }
