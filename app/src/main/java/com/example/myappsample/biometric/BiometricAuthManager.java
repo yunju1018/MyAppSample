@@ -78,7 +78,7 @@ public class BiometricAuthManager {
     public eAuthStatus canAuthenticate() {
         BiometricManager biometricManager = BiometricManager.from(mContext);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            switch (biometricManager.canAuthenticate(BIOMETRIC_STRONG)) {
+            switch (biometricManager.canAuthenticate(BIOMETRIC_STRONG| BiometricManager.Authenticators.BIOMETRIC_WEAK)) {
                 case BiometricManager.BIOMETRIC_SUCCESS:
                     Log.d(TAG, "BIOMETRIC_SUCCESS 인증 가능");
                     return eAuthStatus.STATUS_AVAILABLE;
@@ -144,13 +144,13 @@ public class BiometricAuthManager {
         Executor executor = ContextCompat.getMainExecutor(mContext);
         BiometricPrompt biometricPrompt = new BiometricPrompt((FragmentActivity) mContext, executor, authenticationCallback);
 
-        keyManager.generateKey();
-
-        if (keyManager.cipherInit())
-        {
-            bioCryptoObject = new BiometricPrompt.CryptoObject(keyManager.getCipher());
-            biometricPrompt.authenticate(createBiometricPrompt(), bioCryptoObject);
-        }
+//        keyManager.generateKey();
+//
+//        if (keyManager.cipherInit())
+//        {
+//            bioCryptoObject = new BiometricPrompt.CryptoObject(keyManager.getCipher());
+//            biometricPrompt.authenticate(createBiometricPrompt(), bioCryptoObject);
+//        }
 
         biometricPrompt.authenticate(createBiometricPrompt());
 
