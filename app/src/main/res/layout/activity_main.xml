@@ -19,13 +19,19 @@
         android:id="@+id/swipeDeleteButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="밀어서삭제하기버튼"/>
+        android:text="swipeButton-1"/>
 
     <Button
         android:id="@+id/swipeDelete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="밀어서삭제하기"/>
+        android:text="swipeDelete"/>
+
+    <Button
+        android:id="@+id/swipeDeleteLib"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="swipeDeleteLib"/>
 
     <Button
         android:id="@+id/popupWindow"

@@ -11,7 +11,9 @@ import com.example.myappsample.databinding.ActivityMainBinding;
 import com.example.myappsample.popupwindow.PopupWindowActivity;
 import com.example.myappsample.collasingtoolbar.CollasingToolbarActivity;
 import com.example.myappsample.swipe.SwipeDeleteActivity;
+import com.example.myappsample.swipe.SwipeDeleteActivity2;
 import com.example.myappsample.swipe.SwipeDeleteButtonActivity;
+import com.example.myappsample.swipe.SwipeDeleteLibraryActivity;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
@@ -32,7 +34,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
         binding.swipeDelete.setOnClickListener(view -> {
-            Intent intent = new Intent(this, SwipeDeleteActivity.class);
+            Intent intent = new Intent(this, SwipeDeleteActivity2.class);
+            startActivity(intent);
+        });
+
+        binding.swipeDeleteLib.setOnClickListener(view -> {
+            Intent intent = new Intent(this, SwipeDeleteLibraryActivity.class);
             startActivity(intent);
         });
 

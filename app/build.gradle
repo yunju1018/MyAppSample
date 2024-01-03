@@ -35,6 +35,8 @@ android {
 dependencies {
     // Biometric
     implementation "androidx.biometric:biometric:1.1.0"
+    // swipeDelete
+    implementation 'com.github.yeon-kyu.HoldableSwipeHandler:HoldableSwipeHandler:1.2.2'
 
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
