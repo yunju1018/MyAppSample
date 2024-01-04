@@ -1,27 +1,26 @@
 package com.example.myappsample.swipe
 
-import android.graphics.Canvas
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.myappsample.R
 import com.example.myappsample.databinding.ActivitySwipeDeleteBinding
 import com.example.myappsample.databinding.ListItemBinding
-import com.example.myappsample.databinding.TextViewHolderBinding
 import me.thanel.swipeactionview.SwipeActionView
 import me.thanel.swipeactionview.SwipeGestureListener
 
 
 /**
- * https://github.com/ntnhon/RecyclerViewRowOptionsDemo/tree/master
+ * https://github.com/ntnhon/RecyclerViewRowOptionsDemo/tree/master 참고
+ *
+ * https://github.com/Tunous/SwipeActionView : 라이브러리
  */
 
 class SwipeActionActivity : AppCompatActivity() {
@@ -73,6 +72,7 @@ class SwipeActionActivity : AppCompatActivity() {
 
 
     class SwipeActionAdapter(private val strings: ArrayList<String>) : RecyclerView.Adapter<SwipeActionAdapter.TextViewHolder>() {
+        var completePosition: Int? = null
         override fun getItemCount() = strings.size
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TextViewHolder {
@@ -93,13 +93,24 @@ class SwipeActionActivity : AppCompatActivity() {
             notifyItemRemoved(position)
         }
 
-        inner class TextViewHolder(private val binding: ListItemBinding) : ViewHolder(binding.root) {
+        fun swipeComplete(position: Int) {
+            notifyItemChanged(position, null)
+            Log.d("yj", "swipeComplete position : $position")
+        }
 
+        inner class TextViewHolder(private val binding: ListItemBinding) : ViewHolder(binding.root) {
             fun bind(text: String, position: Int) {
                 binding.text.text = text
                 binding.swipeView.swipeGestureListener = object : SwipeGestureListener {
 
                     override fun onSwipedLeft(swipeActionView: SwipeActionView): Boolean {
+                        completePosition?.let {
+                            swipeComplete(it)
+                        }
+
+                        completePosition = position
+                        Log.d("yj", "completePosition : $completePosition")
+
                         binding.textButton.setOnClickListener {
                             Toast.makeText(itemView.context, "${position+1} 번 아이템 삭제", Toast.LENGTH_SHORT).show()
                             removeAt(position)

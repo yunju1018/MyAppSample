@@ -27,16 +27,16 @@ class CollasingToolbarActivity : AppCompatActivity() {
             params.height = newHeight
             binding.imageView.layoutParams = params
 
-            // 스크롤 위치가 일정 값 이하로 내려갔을 때 이미지뷰를 숨김
-            if (newHeight <= minImageHeight) {
-                if (isImageVisible) {
-                    isImageVisible = false
-                }
-            } else {
-                if (!isImageVisible) {
-                    isImageVisible = true
-                }
-            }
+//            // 스크롤 위치가 일정 값 이하로 내려갔을 때 이미지뷰를 숨김
+//            if (newHeight <= minImageHeight) {
+//                if (isImageVisible) {
+//                    isImageVisible = false
+//                }
+//            } else {
+//                if (!isImageVisible) {
+//                    isImageVisible = true
+//                }
+//            }
         })
 
     }

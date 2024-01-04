@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Background Shape -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/transparent" />
+            <size android:height="50dp"
+                android:width="50dp"/>
+            <!-- Set other shape attributes if needed -->
+        </shape>
+    </item>
+
+    <!-- Text -->
+    <item android:top="10dp" android:left="10dp">
+        <bitmap
+            android:gravity="center"
+            android:text="삭제"
+            android:textSize="12sp"
+            android:textColor="#FFFFFF"
+            android:typeface="normal"
+            android:antialias="true"/>
+    </item>
+</layer-list>

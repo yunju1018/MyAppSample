@@ -58,5 +58,10 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, CollasingToolbarActivity.class);
             startActivity(intent);
         });
+
+        binding.span.setOnClickListener(view -> {
+            Intent intent = new Intent(this, SpannableTestActivity.class);
+            startActivity(intent);
+        });
     }
 }
