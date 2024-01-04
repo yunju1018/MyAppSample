@@ -10,6 +10,7 @@
             android:layout_height="wrap_content"
             android:padding="20dp"
             android:textColor="@android:color/black"
+            android:background="@color/white"
             tools:text="Dummy text"/>
     </FrameLayout>
 </layout>

@@ -21,7 +21,10 @@
             android:name=".swipe.SwipeDeleteButtonActivity"
             android:exported="false" />
         <activity
-            android:name=".swipe.SwipeDeleteActivity"
+            android:name=".swipe.SwipeDeleteActivity2"
+            android:exported="false" />
+        <activity
+            android:name=".swipe.SwipeDeleteLibraryActivity"
             android:exported="false" />
         <activity
             android:name=".swipe.SwipeActionActivity"
