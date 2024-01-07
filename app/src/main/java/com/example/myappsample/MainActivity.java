@@ -9,7 +9,6 @@ import android.os.Bundle;
 import com.example.myappsample.biometric.Biometric_Activity;
 import com.example.myappsample.databinding.ActivityMainBinding;
 import com.example.myappsample.popupwindow.PopupWindowActivity;
-import com.example.myappsample.swipe.SwipeActionActivity;
 import com.example.myappsample.collasingtoolbar.CollasingToolbarActivity;
 import com.example.myappsample.swipe.SwipeDeleteActivity;
 import com.example.myappsample.swipe.SwipeDeleteActivity2;
@@ -29,12 +28,17 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        binding.swipeDelete.setOnClickListener(view -> {
+            Intent intent = new Intent(this, SwipeDeleteActivity.class);
+            startActivity(intent);
+        });
+
         binding.swipeDeleteButton.setOnClickListener(view -> {
             Intent intent = new Intent(this, SwipeDeleteButtonActivity.class);
             startActivity(intent);
         });
 
-        binding.swipeDelete.setOnClickListener(view -> {
+        binding.swipeDeleteButton2.setOnClickListener(view -> {
             Intent intent = new Intent(this, SwipeDeleteActivity2.class);
             startActivity(intent);
         });
@@ -49,18 +53,8 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        binding.swipeAction.setOnClickListener(view -> {
-            Intent intent = new Intent(this, SwipeActionActivity.class);
-            startActivity(intent);
-        });
-
         binding.scroll.setOnClickListener(view -> {
             Intent intent = new Intent(this, CollasingToolbarActivity.class);
-            startActivity(intent);
-        });
-
-        binding.span.setOnClickListener(view -> {
-            Intent intent = new Intent(this, SpannableTestActivity.class);
             startActivity(intent);
         });
     }

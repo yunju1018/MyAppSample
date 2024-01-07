@@ -4,6 +4,7 @@ import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.TypedValue
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -53,35 +54,34 @@ class SwipeDeleteLibraryActivity : AppCompatActivity() {
                 }
             })
             .setBackgroundColor(ContextCompat.getColor(this, R.color.red))
-            .setFirstItemDrawable(ContextCompat.getDrawable(this, R.drawable.ic_launcher_background)!!)
+            .setFirstItemDrawable(draw("삭제", 12f))
             .setFirstItemSideMarginDp(20)
             .setDismissOnClickFirstItem(true)
             .excludeFromHoldableViewHolder(10010)
             .build()
     }
 
-    fun draw(text : String) : Drawable {
-        val textsize = 12 * resources.displayMetrics.scaledDensity
+    fun draw(text: String, textSizeDp: Float): Drawable {
         val paint = Paint().apply {
-            color = ContextCompat.getColor(this@SwipeDeleteLibraryActivity,R.color.white)
-            textSize = 12 * resources.displayMetrics.density // dp to px
+            color = ContextCompat.getColor(this@SwipeDeleteLibraryActivity, R.color.white)
+            textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, textSizeDp, resources.displayMetrics)
             typeface = Typeface.DEFAULT_BOLD
-            textAlign = Paint.Align.LEFT
+            textAlign = Paint.Align.CENTER // Center the text
         }
 
         val textBounds = Rect()
         paint.getTextBounds(text, 0, text.length, textBounds)
 
         // Create a bitmap with enough space to draw the text
-        val bitmap = Bitmap.createBitmap((textsize * text.length).toInt(), (textsize).toInt(), Bitmap.Config.ARGB_8888)
+        val bitmap = Bitmap.createBitmap(textBounds.width(), textBounds.height(), Bitmap.Config.ARGB_8888)
 
         // Create a canvas using the bitmap
         val canvas = Canvas(bitmap)
 
         // Draw the text on the canvas
-        canvas.drawText(text, 0f, textBounds.height().toFloat(), paint)
+        canvas.drawText(text, textBounds.width().toFloat() / 2, textBounds.height().toFloat(), paint)
 
-        return BitmapDrawable(bitmap)
+        return BitmapDrawable(resources, bitmap)
     }
 
     private fun toast(text: String) {
@@ -91,7 +91,7 @@ class SwipeDeleteLibraryActivity : AppCompatActivity() {
     private fun makeList(): ArrayList<String> {
         val arrayList = arrayListOf<String>()
         for (i in 0 until 20) {
-            val str = "item $i"
+            val str = "item $i 지워보기 테스트"
             arrayList.add(str)
         }
         return arrayList

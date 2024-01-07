@@ -15,9 +15,6 @@
         android:theme="@style/Theme.MyAppSample"
         tools:targetApi="31">
         <activity
-            android:name=".SpannableTestActivity"
-            android:exported="false" />
-        <activity
             android:name=".collasingtoolbar.CollasingToolbarActivity"
             android:exported="false" />
         <activity
@@ -27,13 +24,13 @@
             android:name=".swipe.SwipeDeleteButtonActivity"
             android:exported="false" />
         <activity
+            android:name=".swipe.SwipeDeleteActivity"
+            android:exported="false" />
+        <activity
             android:name=".swipe.SwipeDeleteActivity2"
             android:exported="false" />
         <activity
             android:name=".swipe.SwipeDeleteLibraryActivity"
-            android:exported="false" />
-        <activity
-            android:name=".swipe.SwipeActionActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

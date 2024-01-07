@@ -13,7 +13,7 @@ import com.example.myappsample.databinding.ActivitySwipeDeleteBinding
 
 
 /**
- * https://github.com/ntnhon/RecyclerViewRowOptionsDemo/tree/master
+ * https://min-wachya.tistory.com/171
  */
 
 class SwipeDeleteActivity2 : AppCompatActivity() {

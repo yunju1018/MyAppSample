@@ -13,48 +13,46 @@
         android:id="@+id/biometric"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="생체인증"/>
-
-    <Button
-        android:id="@+id/swipeDeleteButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="swipeButton-1"/>
+        android:text="생체인증"
+        android:visibility="gone"/>
 
     <Button
         android:id="@+id/swipeDelete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="swipeDelete"/>
+        android:text="스와이프 삭제"/>
+
+
+    <Button
+        android:id="@+id/swipeDeleteButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="스와이프 버튼 queue"/>
+
+    <Button
+        android:id="@+id/swipeDeleteButton2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="하단버튼"/>
 
     <Button
         android:id="@+id/swipeDeleteLib"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="swipeDeleteLib"/>
+        android:text="스와이프 버튼 라이브러리"/>
 
     <Button
         android:id="@+id/popupWindow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="popupWindow"/>
-
-    <Button
-        android:id="@+id/swipeAction"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="라이브러리"/>
+        android:text="popupWindow"
+        android:visibility="gone"/>
 
     <Button
         android:id="@+id/scroll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="scroll"/>
-
-    <Button
-        android:id="@+id/span"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="span"/>
+        android:text="scroll"
+        android:visibility="gone"/>
 </LinearLayout>
 </layout>

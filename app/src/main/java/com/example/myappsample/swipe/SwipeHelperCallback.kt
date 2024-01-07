@@ -76,7 +76,7 @@ class SwipeHelperCallback(private val recyclerViewAdapter : SwipeAdapter)  : Ite
 
             // 고정시킬 시 애니메이션 추가
             if (newX == -clamp) {
-                getView(viewHolder).animate().translationX(-clamp).setDuration(100L).start()
+                getView(viewHolder).animate().translationX(-clamp).setDuration(50L).start()
                 return
             }
 
@@ -151,7 +151,7 @@ class SwipeHelperCallback(private val recyclerViewAdapter : SwipeAdapter)  : Ite
         // 이전에 선택한 위치의 view 고정 해제
         previousPosition?.let {
             val viewHolder = recyclerView.findViewHolderForAdapterPosition(it) ?: return
-            getView(viewHolder).animate().x(0f).setDuration(100L).start()
+            getView(viewHolder).animate().x(0f).setDuration(50L).start()
             setTag(viewHolder, false)
             previousPosition = null
         }

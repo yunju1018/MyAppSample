@@ -62,7 +62,7 @@ abstract class SwipeHelper(private val recyclerView: RecyclerView) : ItemTouchHe
     }
 
     override fun onChildDraw(canvas: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
-        val position = viewHolder.adapterPosition
+        val position = viewHolder.bindingAdapterPosition
         var maxDX = dX
         val itemView = viewHolder.itemView
 
@@ -87,7 +87,7 @@ abstract class SwipeHelper(private val recyclerView: RecyclerView) : ItemTouchHe
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        val position = viewHolder.adapterPosition
+        val position = viewHolder.bindingAdapterPosition
         if (swipedPosition != position) recoverQueue.add(swipedPosition)
         swipedPosition = position
         recoverSwipedItem()
