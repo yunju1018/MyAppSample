@@ -13,6 +13,7 @@ import com.example.myappsample.collasingtoolbar.CollasingToolbarActivity;
 import com.example.myappsample.swipe.SwipeDeleteActivity;
 import com.example.myappsample.swipe.SwipeDeleteActivity2;
 import com.example.myappsample.swipe.SwipeDeleteButtonActivity;
+import com.example.myappsample.swipe.SwipeDeleteButtonActivity2;
 import com.example.myappsample.swipe.SwipeDeleteLibraryActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -40,6 +41,11 @@ public class MainActivity extends AppCompatActivity {
 
         binding.swipeDeleteButton2.setOnClickListener(view -> {
             Intent intent = new Intent(this, SwipeDeleteActivity2.class);
+            startActivity(intent);
+        });
+
+        binding.swipeDeleteButton3.setOnClickListener(view -> {
+            Intent intent = new Intent(this, SwipeDeleteButtonActivity2.class);
             startActivity(intent);
         });
 

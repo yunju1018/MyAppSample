@@ -30,6 +30,12 @@
         android:text="스와이프 버튼 queue"/>
 
     <Button
+        android:id="@+id/swipeDeleteButton3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="스와이프 하단2 제작중"/>
+
+    <Button
         android:id="@+id/swipeDeleteButton2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

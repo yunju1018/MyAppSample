@@ -24,6 +24,9 @@
             android:name=".swipe.SwipeDeleteButtonActivity"
             android:exported="false" />
         <activity
+            android:name=".swipe.SwipeDeleteButtonActivity2"
+            android:exported="false" />
+        <activity
             android:name=".swipe.SwipeDeleteActivity"
             android:exported="false" />
         <activity

@@ -28,6 +28,8 @@ class SwipeAdapter(private val strings: ArrayList<String>) : RecyclerView.Adapte
             binding.tvRemove.setOnClickListener {
                 removeData(position)
             }
+
+            binding.swipeTextView.text = text
         }
     }
 }
