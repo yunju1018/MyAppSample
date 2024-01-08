@@ -41,9 +41,16 @@ class SwipeDeleteButtonActivity2 : AppCompatActivity() {
             layoutManager = LinearLayoutManager(this@SwipeDeleteButtonActivity2)
         }
 
-        val swipeHelper = SwipeHelper2(swipeAdapter)
+        val swipeHelper = SwipeHelper2().apply {
+            setClamp(200f)
+        }
         val itemTouchHelper = ItemTouchHelper(swipeHelper)
         itemTouchHelper.attachToRecyclerView(binding.recyclerView)
+
+        binding.recyclerView.setOnTouchListener{ _,_ ->
+            swipeHelper.removePreviousClamp(binding.recyclerView)
+            false
+        }
     }
 
     private fun toast(text: String) {
