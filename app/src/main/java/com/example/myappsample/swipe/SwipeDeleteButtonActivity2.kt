@@ -1,10 +1,10 @@
 package com.example.myappsample.swipe
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myappsample.databinding.ActivitySwipeDeleteBinding
 
@@ -33,6 +33,7 @@ class SwipeDeleteButtonActivity2 : AppCompatActivity() {
         setUpRecyclerViewYj()
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun setUpRecyclerViewYj() {
 
         binding.recyclerView.apply {
@@ -41,14 +42,12 @@ class SwipeDeleteButtonActivity2 : AppCompatActivity() {
             layoutManager = LinearLayoutManager(this@SwipeDeleteButtonActivity2)
         }
 
-        val swipeHelper = SwipeHelper2().apply {
-            setClamp(60 * resources.displayMetrics.density) // dp to px)
+        val swipeHelper = SwipeHelper2(binding.recyclerView).apply {
+            setHoldingWidth(60 * resources.displayMetrics.density) // dp to px)
         }
-        val itemTouchHelper = ItemTouchHelper(swipeHelper)
-        itemTouchHelper.attachToRecyclerView(binding.recyclerView)
 
-        binding.recyclerView.setOnTouchListener{ _,_ ->
-            swipeHelper.removePreviousClamp(binding.recyclerView)
+        binding.recyclerView.setOnTouchListener { view, motionEvent ->
+            swipeHelper.removeHolding(binding.recyclerView)
             false
         }
     }
