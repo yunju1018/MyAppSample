@@ -42,7 +42,7 @@ class SwipeDeleteButtonActivity2 : AppCompatActivity() {
         }
 
         val swipeHelper = SwipeHelper2().apply {
-            setClamp(200f)
+            setClamp(60 * resources.displayMetrics.density) // dp to px)
         }
         val itemTouchHelper = ItemTouchHelper(swipeHelper)
         itemTouchHelper.attachToRecyclerView(binding.recyclerView)
