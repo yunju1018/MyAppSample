@@ -3,9 +3,16 @@ package com.example.myappsample.swipe
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.view.MotionEvent
 import android.widget.Toast
+import androidx.databinding.adapters.AbsListViewBindingAdapter.OnScroll
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
+import androidx.recyclerview.widget.RecyclerView.OnScrollListener
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.myappsample.databinding.ActivitySwipeDeleteBinding
 
 /**
@@ -46,35 +53,28 @@ class SwipeDeleteButtonActivity2 : AppCompatActivity() {
             setHoldingWidth(60 * resources.displayMetrics.density) // dp to px)
         }
 
-        binding.recyclerView.setOnTouchListener { view, motionEvent ->
-            swipeHelper.removeHolding(binding.recyclerView)
-            false
-        }
+        binding.recyclerView.addOnItemTouchListener(object : OnItemTouchListener {
+            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+                swipeHelper.removeHolding(binding.recyclerView)
+                return false
+            }
+
+            override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
+
+            override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
+                // 터치 이벤트 가로채는것을 원하지 않으면 true
+            }
+        })
     }
 
     private fun toast(text: String) {
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
     }
 
-    private fun deleteButton(position: Int) : SwipeHelper.UnderButton {
-        return SwipeHelper.UnderButton(
-            this,
-            "삭제",
-            14.0f,
-            android.R.color.holo_red_light,
-            object : SwipeHelper.UnderlayButtonClickListener {
-                override fun onClick() {
-                    list.removeAt(position)
-                    swipeAdapter.notifyDataSetChanged()
-                    toast("Deleted item $position")
-                }
-            })
-    }
-
     private fun makeList() : ArrayList<String> {
         val arrayList = arrayListOf<String>()
-        for (i in 0 until 20) {
-            val str = "item $i 아이템 입력 테스트 "
+        for (i in 0 until 100) {
+            val str = "item $i 스와이프 삭제 테스트 "
             arrayList.add(str)
         }
         return arrayList
