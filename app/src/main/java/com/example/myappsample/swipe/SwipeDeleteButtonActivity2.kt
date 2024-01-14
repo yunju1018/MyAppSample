@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
+import android.view.View
 import android.widget.Toast
+import androidx.core.view.get
 import androidx.databinding.adapters.AbsListViewBindingAdapter.OnScroll
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -55,7 +57,9 @@ class SwipeDeleteButtonActivity2 : AppCompatActivity() {
 
         binding.recyclerView.addOnItemTouchListener(object : OnItemTouchListener {
             override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-                swipeHelper.removeHolding(binding.recyclerView)
+                swipeHelper.getCurrentPosition()?.let {
+                    swipeHelper.removeHolding(rv)
+                }
                 return false
             }
 
@@ -65,10 +69,6 @@ class SwipeDeleteButtonActivity2 : AppCompatActivity() {
                 // 터치 이벤트 가로채는것을 원하지 않으면 true
             }
         })
-    }
-
-    private fun toast(text: String) {
-        Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
     }
 
     private fun makeList() : ArrayList<String> {

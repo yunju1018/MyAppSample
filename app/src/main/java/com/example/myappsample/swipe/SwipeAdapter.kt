@@ -29,6 +29,10 @@ class SwipeAdapter(private val strings: ArrayList<String>) : RecyclerView.Adapte
         fun bind(text: String, position: Int) {
             binding.tvRemove.text = "삭제"
 
+            binding.swipeView.setOnClickListener {
+                Toast.makeText(itemView.context, "$position 팝업띄우기 ", Toast.LENGTH_SHORT).show()
+            }
+
             binding.tvRemove.setOnClickListener {
                 AlertDialog.Builder(itemView.context)
                     .setMessage("$position 번째 삭제 하시겠습니까?")
