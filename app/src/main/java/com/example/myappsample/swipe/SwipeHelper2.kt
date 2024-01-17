@@ -18,7 +18,7 @@ import kotlin.math.min
 class SwipeHelper2(val recyclerView: RecyclerView) : ItemTouchHelper.Callback() {
     private var currentPosition: Int? = null            // 현재 아이템 위치
     private var currentDx = 0f                          // 움직인 넓이
-    private var holdingWidth = 0f                       // 고정 시킬 넓이
+    private var holdingWidth = 0f                       // 고정 시킬 넓이(버튼 크기)
 
     init {
         val itemTouchHelper = ItemTouchHelper(this)
@@ -30,7 +30,12 @@ class SwipeHelper2(val recyclerView: RecyclerView) : ItemTouchHelper.Callback() 
         viewHolder: RecyclerView.ViewHolder,
     ): Int {
         // 이동 방향 결정 (Drag 없음, Swipe LEFT)
-            Log.d("yj", "getMovementFlags")
+//            Log.d("yj", "getMovementFlags")
+
+//        if(viewHolder.bindingAdapterPosition % 5 == 0) {
+//            return makeMovementFlags(0, 0)
+//        }
+
         return makeMovementFlags(0, ItemTouchHelper.LEFT)
     }
 
@@ -44,7 +49,7 @@ class SwipeHelper2(val recyclerView: RecyclerView) : ItemTouchHelper.Callback() 
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        Log.d("yj", "onSwiped")
+//        Log.d("yj", "onSwiped")
         // 뷰가 경계를 벗어날 때 까지 애니메이션을 적용한 다음 호출, swipe 동작 없음
     }
 
@@ -58,19 +63,17 @@ class SwipeHelper2(val recyclerView: RecyclerView) : ItemTouchHelper.Callback() 
 //    }
 //
     override fun getSwipeEscapeVelocity(defaultValue: Float): Float {
-        Log.d("yj", "getSwipeEscapeVelocity")
+//        Log.d("yj", "getSwipeEscapeVelocity")
         return defaultValue * 10
     }
 
     override fun getSwipeThreshold(viewHolder: RecyclerView.ViewHolder): Float {
         // 스와이프로 간주되기 위해 사용자가 뷰를 움직여야 하는 비율 반환
         // 5f 이상 스와이프 시 끝까지 스와이프가 된다.
-        Log.d("yj", "getSwipeThreshold")
+//        Log.d("yj", "getSwipeThreshold")
 
         setTag(viewHolder, currentDx <= -holdingWidth)
 
-        Log.d("yj", "currentDx : $currentDx , holderWidth : ${-holdingWidth}")
-        Log.d("yj", "getTag : ${getTag(viewHolder)}")
         return 2f
     }
     override fun onChildDraw(
@@ -89,7 +92,6 @@ class SwipeHelper2(val recyclerView: RecyclerView) : ItemTouchHelper.Callback() 
             val newX = holdViewHolderPositionWidth(dX, isHold, isCurrentlyActive)  // newX 만큼 이동(고정 시 이동 위치/고정 해제 시 이동 위치 결정)
 
             currentDx = newX
-            Log.d("yj", "newDx : $newX")
             currentPosition = viewHolder.bindingAdapterPosition
             // ItemTouchHelper 항목 변환을 처리하는 유틸리티 클래스, ViewHolder의 하위 항목
             getDefaultUIUtil().onDraw(c, recyclerView, view, newX, dY, actionState, isCurrentlyActive)
@@ -99,7 +101,7 @@ class SwipeHelper2(val recyclerView: RecyclerView) : ItemTouchHelper.Callback() 
     override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
         // 사용자 상호작용이 끝나고 애니메이션도 완료되었을 때 ItemTouchHelper에 의해 호출
         // onSelectChanged, onChildDraw 에서 수행 된 모든 변경 사항을 지운다
-        Log.d("yj", "clearView")
+//        Log.d("yj", "clearView")
         currentDx = 0f
         getDefaultUIUtil().clearView(getView(viewHolder))
     }
@@ -112,15 +114,14 @@ class SwipeHelper2(val recyclerView: RecyclerView) : ItemTouchHelper.Callback() 
         isCurrentlyActive: Boolean
     ) : Float {
 
-        val max = 0f                // 최대 값 : 스와이프 안된 상태
-        val min = -holdingWidth    // 최소 값 : 버튼 크기
+        val max = 0f                   // 최대 값 : 스와이프 안된 상태
+        val min = -holdingWidth     // 최소 값 : 버튼 크기 + 바운딩 줄 크기
 
-        Log.d("yj", "isHold : $isHold, isCurrentlyActive : $isCurrentlyActive")
         val x = if (isHold) {
             // 고정 중
             if(isCurrentlyActive) {
                 // swipe 동작중 일 때
-                if(dX < 0) {
+                if(dX > 0) {
                     // 오른쪽 swipe 일 때
                     0f
                 } else {

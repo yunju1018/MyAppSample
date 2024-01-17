@@ -3,6 +3,7 @@ package com.example.myappsample.swipe
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.DialogInterface.OnClickListener
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.myappsample.databinding.SwipeItemListBinding
 
 class SwipeAdapter(private val strings: ArrayList<String>) : RecyclerView.Adapter<SwipeAdapter.SwipeViewHolder>() {
+    private var isRemove = false
     override fun getItemCount() = strings.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SwipeViewHolder {
@@ -24,12 +26,20 @@ class SwipeAdapter(private val strings: ArrayList<String>) : RecyclerView.Adapte
         strings.removeAt(position)
         notifyDataSetChanged()
     }
+    fun removeItem(isRemove : Boolean) {
+        this.isRemove = isRemove
+    }
 
     inner class SwipeViewHolder(private val binding: SwipeItemListBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(text: String, position: Int) {
             binding.tvRemove.text = "삭제"
 
             binding.swipeView.setOnClickListener {
+                if (isRemove) {
+                    // RecyclerView ItemTouchHelper 터치 이벤트와 동시 호출 방지
+                    isRemove = false
+                    return@setOnClickListener
+                }
                 Toast.makeText(itemView.context, "$position 팝업띄우기 ", Toast.LENGTH_SHORT).show()
             }
 

@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintSet.Motion
 import androidx.core.view.get
 import androidx.databinding.adapters.AbsListViewBindingAdapter.OnScroll
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -55,10 +56,23 @@ class SwipeDeleteButtonActivity2 : AppCompatActivity() {
             setHoldingWidth(60 * resources.displayMetrics.density) // dp to px)
         }
 
+//        binding.recyclerView.setOnScrollChangeListener { view, i, i2, i3, i4 ->
+//            swipeHelper.removeHolding(binding.recyclerView)
+//        }
+
         binding.recyclerView.addOnItemTouchListener(object : OnItemTouchListener {
             override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-                swipeHelper.getCurrentPosition()?.let {
-                    swipeHelper.removeHolding(rv)
+                Log.d("yj", "MotionEvent motion : $e")
+                // Down -> Move -> Up
+                if(e.action == MotionEvent.ACTION_DOWN) {
+                    rv.findChildViewUnder(e.x, e.y)?.let {
+                        val selectHolder = rv.getChildViewHolder(it)
+                        if(selectHolder.bindingAdapterPosition != swipeHelper.getCurrentPosition()) {
+                            swipeHelper.removeHolding(rv)
+                            swipeAdapter.removeItem(true)
+                        }
+                    }
+                    return false
                 }
                 return false
             }
