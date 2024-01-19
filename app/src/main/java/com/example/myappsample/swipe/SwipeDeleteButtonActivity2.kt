@@ -64,15 +64,17 @@ class SwipeDeleteButtonActivity2 : AppCompatActivity() {
             override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
                 Log.d("yj", "MotionEvent motion : $e")
                 // Down -> Move -> Up
-                if(e.action == MotionEvent.ACTION_DOWN) {
-                    rv.findChildViewUnder(e.x, e.y)?.let {
-                        val selectHolder = rv.getChildViewHolder(it)
-                        if(selectHolder.bindingAdapterPosition != swipeHelper.getCurrentPosition()) {
-                            swipeHelper.removeHolding(rv)
-                            swipeAdapter.removeItem(true)
+                if(e.action == MotionEvent.ACTION_UP || e.action == MotionEvent.ACTION_MOVE) {
+                    swipeHelper.getCurrentPosition()?.let {
+                        rv.findChildViewUnder(e.x, e.y)?.let {
+                            val selectHolder = rv.getChildViewHolder(it)
+                            if(selectHolder.bindingAdapterPosition != swipeHelper.getCurrentPosition()) {
+                                swipeHelper.removeHolding(rv)
+                                swipeAdapter.removeItem(true)
+                            }
                         }
                     }
-                    return false
+
                 }
                 return false
             }

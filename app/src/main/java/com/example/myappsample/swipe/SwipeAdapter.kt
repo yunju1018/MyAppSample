@@ -19,8 +19,10 @@ class SwipeAdapter(private val strings: ArrayList<String>) : RecyclerView.Adapte
         return SwipeViewHolder(swipeBinding)
     }
 
-    override fun onBindViewHolder(holder: SwipeViewHolder, position: Int) =
+    override fun onBindViewHolder(holder: SwipeViewHolder, position: Int) {
+        holder.itemView.tag = if (position %5 == 0) "X" else "A"
         holder.bind(strings[position], position)
+    }
 
     fun removeData(position: Int) {
         strings.removeAt(position)
@@ -37,6 +39,7 @@ class SwipeAdapter(private val strings: ArrayList<String>) : RecyclerView.Adapte
             binding.swipeView.setOnClickListener {
                 if (isRemove) {
                     // RecyclerView ItemTouchHelper 터치 이벤트와 동시 호출 방지
+                    Log.d("yj", "onclickListener isRemove")
                     isRemove = false
                     return@setOnClickListener
                 }

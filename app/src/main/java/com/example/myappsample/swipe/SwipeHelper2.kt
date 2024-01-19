@@ -31,12 +31,13 @@ class SwipeHelper2(val recyclerView: RecyclerView) : ItemTouchHelper.Callback() 
     ): Int {
         // 이동 방향 결정 (Drag 없음, Swipe LEFT)
 //            Log.d("yj", "getMovementFlags")
+        val status = viewHolder.itemView.tag.toString()
 
-//        if(viewHolder.bindingAdapterPosition % 5 == 0) {
-//            return makeMovementFlags(0, 0)
-//        }
-
-        return makeMovementFlags(0, ItemTouchHelper.LEFT)
+        return if("A".equals(status, true)) {
+            makeMovementFlags(0, 0)
+        } else {
+            makeMovementFlags(0, ItemTouchHelper.LEFT)
+        }
     }
 
     override fun onMove(
