@@ -1,21 +1,13 @@
 package com.example.myappsample.swipe
 
 import android.annotation.SuppressLint
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.MotionEvent
-import android.view.View
-import android.widget.Toast
-import androidx.constraintlayout.widget.ConstraintSet.Motion
-import androidx.core.view.get
-import androidx.databinding.adapters.AbsListViewBindingAdapter.OnScroll
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
-import androidx.recyclerview.widget.RecyclerView.OnScrollListener
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.myappsample.databinding.ActivitySwipeDeleteBinding
 
 /**
@@ -52,29 +44,31 @@ class SwipeDeleteButtonActivity2 : AppCompatActivity() {
             layoutManager = LinearLayoutManager(this@SwipeDeleteButtonActivity2)
         }
 
-        val swipeHelper = SwipeHelper2(binding.recyclerView).apply {
-            setHoldingWidth(60 * resources.displayMetrics.density) // dp to px)
-        }
-
-//        binding.recyclerView.setOnScrollChangeListener { view, i, i2, i3, i4 ->
-//            swipeHelper.removeHolding(binding.recyclerView)
-//        }
+        val swipeHelper = SwipeHelper2(binding.recyclerView, 60 * resources.displayMetrics.density)
+        // 버튼탭이 열려있을때는 터치(클릭)에 반응하지 않는다.
+        // 버튼 탭이 닫혀있을 때는 뷰홀더 온클릭 리스너가 동작한다. -> 터치리스너 return false
 
         binding.recyclerView.addOnItemTouchListener(object : OnItemTouchListener {
             override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-                Log.d("yj", "MotionEvent motion : $e")
-                // Down -> Move -> Up
-                if(e.action == MotionEvent.ACTION_UP || e.action == MotionEvent.ACTION_MOVE) {
-                    swipeHelper.getCurrentPosition()?.let {
-                        rv.findChildViewUnder(e.x, e.y)?.let {
-                            val selectHolder = rv.getChildViewHolder(it)
-                            if(selectHolder.bindingAdapterPosition != swipeHelper.getCurrentPosition()) {
+                // ItemTouchHelper 동작 시 (Swipe 시) action Up 동작 X
+                swipeHelper.getCurrentPosition()?.let {
+                    // 스와이프 된 View가 null이 아니고
+                    rv.findChildViewUnder(e.x, e.y)?.let {
+                        // 리싸이클러뷰의 선택 된 뷰가 null이 아닐 떄
+                        val selectHolder = rv.getChildViewHolder(it)
+                        if(selectHolder.bindingAdapterPosition != swipeHelper.getCurrentPosition()) {
+                            // 선택된 아이템 위치와 헬퍼의 아이템 위치가 다르면 닫기
+                            swipeHelper.removeHolding(rv)
+                            swipeAdapter.removeItem(true)
+                        } else {
+                            if(e.action == MotionEvent.ACTION_UP) {
+                                // 선택된 아이템 위치와 헬퍼의 아이템 위치가 같지만, UP 이벤트 들어 왔을 경우에는 닫기.
                                 swipeHelper.removeHolding(rv)
                                 swipeAdapter.removeItem(true)
                             }
+                            // 선택된 아이템 위치와 헬퍼 위치가 같다면 유지
                         }
                     }
-
                 }
                 return false
             }

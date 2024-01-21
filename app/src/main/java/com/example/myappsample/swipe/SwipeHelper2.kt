@@ -14,9 +14,13 @@ import kotlin.math.min
  * https://github.com/yeon-kyu/HoldableSwipeHandler/blob/main/HoldableSwipeHelper/src/main/java/com/yeonkyu/HoldableSwipeHelper/HoldableSwipeHandler.kt
  */
 
-class SwipeHelper2(val recyclerView: RecyclerView, private val holdingWidth:Float = 0f) : ItemTouchHelper.Callback() {
+// getMoveFlags, onChildDraw 전부 움직일 때 마다 지속적으로 반응해서 지연 체크하는 방식 불가능.
+// setTag 시 지연을 걸어서 tag 걸리는 부분을 막으면 연달아 swipe했을 때 열리지 않음.
+
+class SwipeHelper2(private val recyclerView: RecyclerView, private val holdingWidth:Float = 0f) : ItemTouchHelper.Callback() {
     private var currentPosition: Int? = null            // 스와이프 된 아이템 위치
     private var currentDx = 0f                          // 움직인 넓이
+    private var positionList = arrayListOf<Int>()
 
     init {
         val itemTouchHelper = ItemTouchHelper(this)
@@ -28,11 +32,11 @@ class SwipeHelper2(val recyclerView: RecyclerView, private val holdingWidth:Floa
         viewHolder: RecyclerView.ViewHolder,
     ): Int {
         // 이동 방향 결정 (Drag 없음, Swipe LEFT)
-        return if(viewHolder.itemView.getTag(R.string.is_swipe) == true) {
-            makeMovementFlags(0, 0)
-        } else {
-            makeMovementFlags(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT)
-        }
+//        return if(viewHolder.itemView.getTag(R.string.is_swipe) == true) {
+//            makeMovementFlags(0, 0)
+//        } else {
+            return makeMovementFlags(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT)
+//        }
     }
 
     override fun onMove(
@@ -40,7 +44,7 @@ class SwipeHelper2(val recyclerView: RecyclerView, private val holdingWidth:Floa
         viewHolder: RecyclerView.ViewHolder,
         target: RecyclerView.ViewHolder,
     ): Boolean {
-        // 항목을 드래그하면 호출 호출
+        // 항목을 드래그하면 호출
         return false
     }
 
@@ -126,6 +130,23 @@ class SwipeHelper2(val recyclerView: RecyclerView, private val holdingWidth:Floa
 
     private fun setTag(viewHolder: RecyclerView.ViewHolder, isHold: Boolean) {
         // holding 여부 세팅
+        Log.d("yj", "setTag : ${viewHolder.bindingAdapterPosition}, isHold : $isHold")
+
+        if(positionList.size == 0 && isHold) {
+            positionList.add(viewHolder.bindingAdapterPosition)
+        } else {
+            positionList.forEach {index ->
+                Log.d("yj", "index : $index")
+                // 빠르게 swipe진행할 시 removeViewHolder를 타지 않는 이슈가 있어 예외처리 추가
+                // list가 비어있지 않은 경우, 현재 포지션과 리스트 내의 값이 다를 경우 itemView의 tag를 지운다.
+                if(viewHolder.bindingAdapterPosition != index) {
+                    val holder = recyclerView.findViewHolderForAdapterPosition(index) ?: return
+                    getView(holder).animate().translationX(0f).duration = 0L
+                    holder.itemView.setTag(R.string.is_holding, false)
+                    positionList.remove(index)
+                }
+            }
+        }
         viewHolder.itemView.setTag(R.string.is_holding, isHold)
     }
 
@@ -145,6 +166,11 @@ class SwipeHelper2(val recyclerView: RecyclerView, private val holdingWidth:Floa
             getView(viewHolder).animate().translationX(0f).duration = 200L
             setTag(viewHolder, false)
             currentPosition = null
+
+            if(positionList.contains(it)) {
+                positionList.remove(it)
+            }
+            Log.d("yj", "positionList : $positionList")
         }
     }
 }
