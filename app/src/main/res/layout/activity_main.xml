@@ -20,14 +20,16 @@
         android:id="@+id/swipeDelete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="스와이프 삭제"/>
+        android:text="스와이프 삭제"
+        android:visibility="gone"/>
 
 
     <Button
         android:id="@+id/swipeDeleteButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="스와이프 버튼 queue"/>
+        android:text="스와이프 버튼 queue"
+        android:visibility="gone"/>
 
     <Button
         android:id="@+id/swipeDeleteButton3"
@@ -39,7 +41,8 @@
         android:id="@+id/swipeDeleteButton2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="하단버튼"/>
+        android:text="하단버튼"
+        android:visibility="gone"/>
 
     <Button
         android:id="@+id/swipeDeleteLib"

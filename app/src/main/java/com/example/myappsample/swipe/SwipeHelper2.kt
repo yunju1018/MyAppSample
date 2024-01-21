@@ -3,7 +3,6 @@ package com.example.myappsample.swipe
 import android.graphics.Canvas
 import android.util.Log
 import android.view.View
-import android.widget.TextView
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myappsample.R
@@ -15,10 +14,9 @@ import kotlin.math.min
  * https://github.com/yeon-kyu/HoldableSwipeHandler/blob/main/HoldableSwipeHelper/src/main/java/com/yeonkyu/HoldableSwipeHelper/HoldableSwipeHandler.kt
  */
 
-class SwipeHelper2(val recyclerView: RecyclerView) : ItemTouchHelper.Callback() {
-    private var currentPosition: Int? = null            // 현재 아이템 위치
+class SwipeHelper2(val recyclerView: RecyclerView, private val holdingWidth:Float = 0f) : ItemTouchHelper.Callback() {
+    private var currentPosition: Int? = null            // 스와이프 된 아이템 위치
     private var currentDx = 0f                          // 움직인 넓이
-    private var holdingWidth = 0f                       // 고정 시킬 넓이(버튼 크기)
 
     init {
         val itemTouchHelper = ItemTouchHelper(this)
@@ -30,13 +28,10 @@ class SwipeHelper2(val recyclerView: RecyclerView) : ItemTouchHelper.Callback() 
         viewHolder: RecyclerView.ViewHolder,
     ): Int {
         // 이동 방향 결정 (Drag 없음, Swipe LEFT)
-//            Log.d("yj", "getMovementFlags")
-        val status = viewHolder.itemView.tag.toString()
-
-        return if("A".equals(status, true)) {
+        return if(viewHolder.itemView.getTag(R.string.is_swipe) == true) {
             makeMovementFlags(0, 0)
         } else {
-            makeMovementFlags(0, ItemTouchHelper.LEFT)
+            makeMovementFlags(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT)
         }
     }
 
@@ -90,7 +85,7 @@ class SwipeHelper2(val recyclerView: RecyclerView) : ItemTouchHelper.Callback() 
         if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE)  {
             val view = getView(viewHolder)
             val isHold = getTag(viewHolder)      // 고정할지 말지 결정, true : 고정함 false : 고정 안 함
-            val newX = holdViewHolderPositionWidth(dX, isHold, isCurrentlyActive)  // newX 만큼 이동(고정 시 이동 위치/고정 해제 시 이동 위치 결정)
+            val newX = holdViewHolderPositionWidth(dX, isHold)  // newX 만큼 이동(고정 시 이동 위치/고정 해제 시 이동 위치 결정)
 
             currentDx = newX
             currentPosition = viewHolder.bindingAdapterPosition
@@ -103,7 +98,7 @@ class SwipeHelper2(val recyclerView: RecyclerView) : ItemTouchHelper.Callback() 
         // 사용자 상호작용이 끝나고 애니메이션도 완료되었을 때 ItemTouchHelper에 의해 호출
         // onSelectChanged, onChildDraw 에서 수행 된 모든 변경 사항을 지운다
 //        Log.d("yj", "clearView")
-        currentDx = 0f
+//        currentDx = 0f
         getDefaultUIUtil().clearView(getView(viewHolder))
     }
 
@@ -112,7 +107,6 @@ class SwipeHelper2(val recyclerView: RecyclerView) : ItemTouchHelper.Callback() 
     private fun holdViewHolderPositionWidth(
         dX: Float,  // 행동에 따른 수평 변위량
         isHold: Boolean,
-        isCurrentlyActive: Boolean
     ) : Float {
 
         val max = 0f                   // 최대 값 : 스와이프 안된 상태
@@ -120,41 +114,25 @@ class SwipeHelper2(val recyclerView: RecyclerView) : ItemTouchHelper.Callback() 
 
         val x = if (isHold) {
             // 고정 중
-            if(isCurrentlyActive) {
-                // swipe 동작중 일 때
-                if(dX > 0) {
-                    // 오른쪽 swipe 일 때
-                    0f
-                } else {
-                    // 왼쪽 swipe 일 때
-                    dX-holdingWidth
-                }
-            } else {
-                dX-holdingWidth
-            }
+            dX-holdingWidth
         } else {
             // 고정 중이 아닐 경우
             dX
         }
-        // dx 값은 최대 view 의 넓이를 넘지 않아야 함 (바운딩 되는 느낌 주려면 dx값 조정)
+        // dx 값은 최대 view 의 넓이를 넘지 않아야 함 (바운딩 되는 느낌 주려면 min값 조정)
         val newX = max(min, x)
-
-        return min(newX, max)       // 왼쪽 스와이프 시 작은 값 넘기기
+        return min(newX, max)       // 왼쪽 작은 값 넘기기
     }
 
     private fun setTag(viewHolder: RecyclerView.ViewHolder, isHold: Boolean) {
         // holding 여부 세팅
-        viewHolder.itemView.tag = isHold
+        viewHolder.itemView.setTag(R.string.is_holding, isHold)
     }
 
-    fun getTag(viewHolder: RecyclerView.ViewHolder) : Boolean {
+    private fun getTag(viewHolder: RecyclerView.ViewHolder) : Boolean {
         // holding 여부 반환
-        return viewHolder.itemView.tag as? Boolean ?: false
+        return viewHolder.itemView.getTag(R.string.is_holding) == true
     }
-
-    fun setHoldingWidth(clamp: Float) {
-        Log.d("yj", "holderWidth : $clamp")
-        this.holdingWidth = clamp }
 
     fun getCurrentPosition() : Int? {
         return currentPosition

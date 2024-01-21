@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">MyAppSample</string>
+    <string name="is_swipe">isSwipeTagKey</string>
+    <string name="is_holding">isHoldingTagKey</string>
 </resources>
