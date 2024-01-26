@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.myappsample.biometric.Biometric_Activity;
+import com.example.myappsample.chipAnimation.TestActivity;
 import com.example.myappsample.databinding.ActivityMainBinding;
 import com.example.myappsample.popupwindow.PopupWindowActivity;
 import com.example.myappsample.collasingtoolbar.CollasingToolbarActivity;
@@ -61,6 +62,11 @@ public class MainActivity extends AppCompatActivity {
 
         binding.scroll.setOnClickListener(view -> {
             Intent intent = new Intent(this, CollasingToolbarActivity.class);
+            startActivity(intent);
+        });
+
+        binding.motion.setOnClickListener(view -> {
+            Intent intent = new Intent(this, TestActivity.class);
             startActivity(intent);
         });
     }

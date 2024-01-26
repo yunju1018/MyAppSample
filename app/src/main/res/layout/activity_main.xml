@@ -63,5 +63,12 @@
         android:layout_height="wrap_content"
         android:text="scroll"
         android:visibility="gone"/>
+
+    <Button
+        android:id="@+id/motion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="motion"
+        android:visibility="visible"/>
 </LinearLayout>
 </layout>

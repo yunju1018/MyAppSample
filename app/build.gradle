@@ -33,6 +33,9 @@ android {
 }
 
 dependencies {
+    // motionLayout
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta1'
+
     implementation 'com.github.Tunous:SwipeActionView:1.4.0'
 
     // Biometric
