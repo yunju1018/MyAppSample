@@ -36,7 +36,7 @@
             android:name=".swipe.SwipeDeleteLibraryActivity"
             android:exported="false" />
         <activity
-            android:name=".chipAnimation.TestActivity"
+            android:name=".chipAnimation.AnimationTestActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

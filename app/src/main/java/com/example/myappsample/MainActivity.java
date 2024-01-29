@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.myappsample.biometric.Biometric_Activity;
-import com.example.myappsample.chipAnimation.TestActivity;
+import com.example.myappsample.chipAnimation.AnimationTestActivity;
 import com.example.myappsample.databinding.ActivityMainBinding;
 import com.example.myappsample.popupwindow.PopupWindowActivity;
 import com.example.myappsample.collasingtoolbar.CollasingToolbarActivity;
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         binding.motion.setOnClickListener(view -> {
-            Intent intent = new Intent(this, TestActivity.class);
+            Intent intent = new Intent(this, AnimationTestActivity.class);
             startActivity(intent);
         });
     }
