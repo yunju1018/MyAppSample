@@ -32,6 +32,10 @@ class AnimationTestActivity: AppCompatActivity() {
                 binding.colorView
             )
         }
+
+        binding.rewardLayout.setOnClickListener {
+            binding.rewardLayout.setProgressBarAnimation()
+        }
     }
 
     private fun testRecyclerViewResize() {
@@ -90,12 +94,13 @@ class AnimationTestActivity: AppCompatActivity() {
         }
 
         inner class AnimationViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            private val motionViewItem = view.findViewById<ConstraintLayout>(R.id.motionViewItem)
-            private val rewardBar = view.findViewById<View>(R.id.rewardBar)
+//            private val motionViewItem = view.findViewById<ConstraintLayout>(R.id.motionViewItem)
+//            private val rewardBar = view.findViewById<View>(R.id.rewardBar)
+            private val rewardLayout = view.findViewById<RewardsMyRewardsLayout>(R.id.rewardLayout)
 
             fun bind() {
-                motionViewItem.setOnClickListener {
-                    animatedResize(itemView.context, rewardBar)
+                itemView.setOnClickListener {
+                    rewardLayout.setProgressBarAnimation()
                 }
             }
         }

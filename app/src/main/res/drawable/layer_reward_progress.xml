@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@android:id/background">
+        <shape>
+            <corners android:radius="6.5dp" />
+            <solid android:color="@color/rewardProgressBarBg" />
+        </shape>
+    </item>
+
+    <item android:id="@android:id/secondaryProgress">
+        <!--<clip><shape>
+        <corners android:radius="6.5dp" /><solid android:color="#80ffd300" />
+        </shape></clip>-->
+        <!-- max 값과 secondaryProgress 값이 동일하지 않을 때도 radius 표현되도록 scaleWidth 사용 -->
+        <scale android:scaleWidth="100%">
+            <shape>
+                <corners android:radius="6.5dp" />
+                <solid android:color="#fed354" />
+            </shape>
+        </scale>
+    </item>
+
+    <item android:id="@android:id/progress">
+        <!--<clip><shape>
+        <corners android:radius="6.5dp" /><solid android:color="@color/c_c2a661" />
+        </shape></clip>-->
+        <!-- max 값과 progress 값이 동일하지 않을 때도 radius 표현되도록 scaleWidth 사용 -->
+        <scale android:scaleWidth="100%">
+            <shape>
+                <corners android:radius="6.5dp" />
+                <solid android:color="@color/c_c2a661" />
+            </shape>
+        </scale>
+    </item>
+</layer-list>

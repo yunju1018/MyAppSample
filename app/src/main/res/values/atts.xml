@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="RewardsMyRewardsLayout">
+        <attr name="userGradeType" />
+    </declare-styleable>
+
+    <!-- eUserGrade 클래스와 동일한 ordinal 값으로 정의 -->
+    <attr name="userGradeType" format="enum">
+        <enum name="none" value="0" />
+        <enum name="welcome" value="1" />
+        <enum name="green" value="2" />
+        <enum name="gold" value="3" />
+    </attr>
+</resources>

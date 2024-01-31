@@ -5,7 +5,9 @@ import android.content.Context
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
+import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.example.myappsample.R
 
@@ -103,6 +105,48 @@ class AnimationUtil {
                 dp.toFloat(),
                 context.resources.displayMetrics
             ).toInt()
+        }
+
+        @JvmStatic
+        fun progressAnimation(progressbar: ProgressBar, savedStarCount: Int) {
+            val multiply = 100
+            progressbar.max = 12 * multiply
+
+            // progressBar
+            val progressAnimation: ValueAnimator = ObjectAnimator.ofInt(progressbar, "progress", 0, savedStarCount * multiply)
+            progressAnimation.duration = 1000
+            progressAnimation.addUpdateListener {
+                val animationValue = it.animatedValue as Int
+                progressbar.progress = animationValue
+            }
+
+            // delay
+            val delayAnimator = ValueAnimator.ofInt(0,0)
+            delayAnimator.duration = 500
+
+            // progressBar width
+            val originWidth = progressbar.width
+            val targetWidth = 0
+            val widthAnimation = ValueAnimator.ofInt(originWidth, targetWidth)
+            widthAnimation.duration = 1000
+            widthAnimation.addUpdateListener {
+                val newWidth = it.animatedValue as Int
+                val params = progressbar.layoutParams
+                params.width = newWidth
+                progressbar.layoutParams = params
+            }
+
+            // progressBar fadeOut
+            val fadeOut: ValueAnimator = ObjectAnimator.ofFloat(progressbar, "alpha", 1f, 0.2f)
+            fadeOut.duration = 1000
+
+            val animatorSet = AnimatorSet()
+            animatorSet.play(progressAnimation)
+            animatorSet.play(delayAnimator).after(progressAnimation)
+            animatorSet.play(widthAnimation).with(fadeOut).after(delayAnimator)
+            animatorSet.startDelay = 500
+
+            animatorSet.start()
         }
     }
 }

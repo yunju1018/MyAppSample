@@ -2,4 +2,8 @@
     <string name="app_name">MyAppSample</string>
     <string name="is_swipe">isSwipeTagKey</string>
     <string name="is_holding">isHoldingTagKey</string>
+
+    <string name="user_grade_welcome">Welcome Level</string>
+    <string name="user_grade_green">Green Level</string>
+    <string name="user_grade_gold">Gold Level</string>
 </resources>

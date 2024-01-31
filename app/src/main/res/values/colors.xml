@@ -16,4 +16,12 @@
     <color name="red">#FF0000</color>
     <color name="transparent">#00FFFFFF</color>
     <color name="gold">#c2a661</color>
+
+    <color name="c_c2a661">#c2a661</color>
+    <color name="c_00a862">#00a862</color>
+    <color name="c_61000000">#61000000</color>
+    <color name="rewardProgressBarWelcome">#666666</color>
+    <color name="c_de000000">#de000000</color>
+    <color name="rewardProgressBarBg">#eeeeee</color>
+
 </resources>

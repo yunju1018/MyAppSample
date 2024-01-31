@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/motionView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="20dp"
+            android:elevation="2dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+            <TextView
+                android:id="@+id/mix_TextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingVertical="5dp"
+                android:maxLines="1"
+                android:text="Gold 9/12"
+                android:layout_gravity="center_vertical"
+                android:textSize="15sp"
+                android:textColor="@color/black"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <ProgressBar
+                android:id="@+id/rewardProgressBar"
+                android:layout_width="200dp"
+                android:layout_height="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_gravity="center_vertical"
+                android:indeterminateOnly="false"
+                android:progressDrawable="@drawable/layer_reward_progress"
+                app:layout_constraintLeft_toRightOf="@id/mix_TextView"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                tools:max="12"
+                tools:progress="9" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
