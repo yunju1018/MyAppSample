@@ -17,7 +17,7 @@ import kotlin.math.min
 // getMoveFlags, onChildDraw 전부 움직일 때 마다 지속적으로 반응해서 지연 체크하는 방식 불가능.
 // setTag 시 지연을 걸어서 tag 걸리는 부분을 막으면 연달아 swipe했을 때 열리지 않음.
 
-class SwipeHelper2(private val recyclerView: RecyclerView, private val holdingWidth:Float = 0f) : ItemTouchHelper.Callback() {
+class SwipeHelper2(private val recyclerView: RecyclerView, private val holdingWidth:Float = 0f, private val listener: OnSwipeClearListener?) : ItemTouchHelper.Callback() {
     private var currentPosition: Int? = null            // 스와이프 된 아이템 위치
     private var currentDx = 0f                          // 움직인 넓이
     private var positionList = arrayListOf<Int>()
@@ -27,16 +27,17 @@ class SwipeHelper2(private val recyclerView: RecyclerView, private val holdingWi
         itemTouchHelper.attachToRecyclerView(recyclerView)
     }
 
+    public interface OnSwipeClearListener {
+        fun onSwipeClear()
+    }
+
     override fun getMovementFlags(
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder,
     ): Int {
         // 이동 방향 결정 (Drag 없음, Swipe LEFT)
-//        return if(viewHolder.itemView.getTag(R.string.is_swipe) == true) {
-//            makeMovementFlags(0, 0)
-//        } else {
-            return makeMovementFlags(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT)
-//        }
+        return makeMovementFlags(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT)
+
     }
 
     override fun onMove(
@@ -94,7 +95,13 @@ class SwipeHelper2(private val recyclerView: RecyclerView, private val holdingWi
             currentDx = newX
             currentPosition = viewHolder.bindingAdapterPosition
             // ItemTouchHelper 항목 변환을 처리하는 유틸리티 클래스, ViewHolder의 하위 항목
-            getDefaultUIUtil().onDraw(c, recyclerView, view, newX, dY, actionState, isCurrentlyActive)
+
+            if(viewHolder.itemView.getTag(R.string.is_swipe) == true) {
+                // isHold
+                getDefaultUIUtil().onDraw(c, recyclerView, view, newX, dY, actionState, isCurrentlyActive)
+            } else {
+                getDefaultUIUtil().onDraw(c, recyclerView, view, 0f, dY, actionState, isCurrentlyActive)
+            }
         }
     }
 
@@ -103,6 +110,15 @@ class SwipeHelper2(private val recyclerView: RecyclerView, private val holdingWi
         // onSelectChanged, onChildDraw 에서 수행 된 모든 변경 사항을 지운다
 //        Log.d("yj", "clearView")
 //        currentDx = 0f
+
+        listener?.let {
+            if(viewHolder.itemView.getTag(R.string.is_swipe) == false && viewHolder.itemView.getTag(R.string.is_holding) == true) {
+                // 스와이프 동작하지 않는 뷰에서 holding이 생겼을 때
+                it.onSwipeClear()
+                viewHolder.itemView.setTag(R.string.is_holding, false)
+            }
+        }
+
         getDefaultUIUtil().clearView(getView(viewHolder))
     }
 

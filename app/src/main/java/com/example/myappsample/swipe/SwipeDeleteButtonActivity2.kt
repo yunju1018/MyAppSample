@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
 import com.example.myappsample.databinding.ActivitySwipeDeleteBinding
+import com.example.myappsample.toastsnackbar.ToastSnackBar
 
 /**
  * https://velog.io/@nimok97/RecyclerView-%EC%97%90%EC%84%9C-item-Swipe-%ED%95%98%EA%B8%B0-feat.-ItemTouchHelper-ItemTouchUIUtil
@@ -44,7 +45,7 @@ class SwipeDeleteButtonActivity2 : AppCompatActivity() {
             layoutManager = LinearLayoutManager(this@SwipeDeleteButtonActivity2)
         }
 
-        val swipeHelper = SwipeHelper2(binding.recyclerView, 60 * resources.displayMetrics.density)
+        val swipeHelper = SwipeHelper2(binding.recyclerView, 60 * resources.displayMetrics.density, onSwipeClear)
         // 버튼탭이 열려있을때는 터치(클릭)에 반응하지 않는다.
         // 버튼 탭이 닫혀있을 때는 뷰홀더 온클릭 리스너가 동작한다. -> 터치리스너 return false
 
@@ -79,6 +80,12 @@ class SwipeDeleteButtonActivity2 : AppCompatActivity() {
                 // 터치 이벤트 가로채는것을 원하지 않으면 true
             }
         })
+    }
+
+    private val onSwipeClear = object : SwipeHelper2.OnSwipeClearListener {
+        override fun onSwipeClear() {
+            ToastSnackBar.make(binding.snackBarArea, "스와이프 안되는 뷰").show()
+        }
     }
 
     private fun makeList() : ArrayList<String> {

@@ -5,6 +5,7 @@ import androidx.databinding.DataBindingUtil;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.example.myappsample.biometric.Biometric_Activity;
 import com.example.myappsample.chipAnimation.AnimationTestActivity;
@@ -16,6 +17,7 @@ import com.example.myappsample.swipe.SwipeDeleteActivity2;
 import com.example.myappsample.swipe.SwipeDeleteButtonActivity;
 import com.example.myappsample.swipe.SwipeDeleteButtonActivity2;
 import com.example.myappsample.swipe.SwipeDeleteLibraryActivity;
+import com.example.myappsample.toastsnackbar.ToastSnackBar;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
@@ -68,6 +70,12 @@ public class MainActivity extends AppCompatActivity {
         binding.motion.setOnClickListener(view -> {
             Intent intent = new Intent(this, AnimationTestActivity.class);
             startActivity(intent);
+        });
+
+        binding.snackbar.setOnClickListener(v -> {
+            ToastSnackBar.make(binding.snackbar, "토스트 스낵바 테스트중 토스트 스낵바 테스트중 토스트 스낵바 테스트중 토스트 스낵바 테스트중 토스트 스낵바 테스트중 토스트 스낵바 테스트중").setAction(R.drawable.btn_add_circle, action -> {
+                Toast.makeText(this, "스낵바 액션 눌림", Toast.LENGTH_SHORT).show();
+            }).show();
         });
     }
 }
