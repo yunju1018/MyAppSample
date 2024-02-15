@@ -1,19 +1,18 @@
 package com.example.myappsample.swipe
 
-import android.graphics.*
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.TypedValue
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.daimajia.swipe.SwipeLayout
+import com.daimajia.swipe.adapters.RecyclerSwipeAdapter
 import com.example.myappsample.R
 import com.example.myappsample.databinding.ActivitySwipeDeleteBinding
-import com.yeonkyu.HoldableSwipeHelper.HoldableSwipeHandler
-import com.yeonkyu.HoldableSwipeHelper.SwipeButtonAction
+import com.example.myappsample.databinding.SwipeLayoutItemBinding
 
 
 /**
@@ -23,7 +22,7 @@ import com.yeonkyu.HoldableSwipeHelper.SwipeButtonAction
 class SwipeDeleteLibraryActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySwipeDeleteBinding
-    private lateinit var swipeAdapter: Adapter
+    private lateinit var swipeAdapter: SwipeAdapter
     private var list: ArrayList<String> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,53 +35,79 @@ class SwipeDeleteLibraryActivity : AppCompatActivity() {
 
     private fun init() {
         list = makeList()
-        swipeAdapter = Adapter(list)
+        swipeAdapter = SwipeAdapter(list)
         binding.recyclerView.apply {
             adapter = swipeAdapter
-            addItemDecoration(DividerItemDecoration(this@SwipeDeleteLibraryActivity, DividerItemDecoration.VERTICAL))
+            addItemDecoration(
+                DividerItemDecoration(
+                    this@SwipeDeleteLibraryActivity,
+                    DividerItemDecoration.VERTICAL
+                )
+            )
             layoutManager = LinearLayoutManager(this@SwipeDeleteLibraryActivity)
         }
-        setUpRecyclerView()
     }
 
-    private fun setUpRecyclerView() {
-        HoldableSwipeHandler.Builder(this)
-            .setOnRecyclerView(binding.recyclerView)
-            .setSwipeButtonAction(object : SwipeButtonAction {
-                override fun onClickFirstButton(absoluteAdapterPosition: Int) {
-                    toast(absoluteAdapterPosition.toString())
-                }
-            })
-            .setBackgroundColor(ContextCompat.getColor(this, R.color.red))
-            .setFirstItemDrawable(draw("삭제", 12f))
-            .setFirstItemSideMarginDp(20)
-            .setDismissOnClickFirstItem(true)
-            .excludeFromHoldableViewHolder(10010)
-            .build()
-    }
-
-    fun draw(text: String, textSizeDp: Float): Drawable {
-        val paint = Paint().apply {
-            color = ContextCompat.getColor(this@SwipeDeleteLibraryActivity, R.color.white)
-            textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, textSizeDp, resources.displayMetrics)
-            typeface = Typeface.DEFAULT_BOLD
-            textAlign = Paint.Align.CENTER // Center the text
+    inner class SwipeAdapter(private val strings: ArrayList<String>) : RecyclerSwipeAdapter<SwipeAdapter.SwipeViewHolder>() {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SwipeViewHolder {
+            val binding = SwipeLayoutItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
+            return SwipeViewHolder(binding)
         }
 
-        val textBounds = Rect()
-        paint.getTextBounds(text, 0, text.length, textBounds)
+        override fun getItemCount(): Int = strings.size
 
-        // Create a bitmap with enough space to draw the text
-        val bitmap = Bitmap.createBitmap(textBounds.width(), textBounds.height(), Bitmap.Config.ARGB_8888)
+        override fun getSwipeLayoutResourceId(position: Int): Int {
+            return R.id.swipeLayout
+        }
 
-        // Create a canvas using the bitmap
-        val canvas = Canvas(bitmap)
+        override fun onBindViewHolder(holder: SwipeViewHolder, position: Int) {
+            holder.bind(strings[position], position)
 
-        // Draw the text on the canvas
-        canvas.drawText(text, textBounds.width().toFloat() / 2, textBounds.height().toFloat(), paint)
+            mItemManger.bindView(holder.itemView, position)
+        }
 
-        return BitmapDrawable(resources, bitmap)
+        inner class SwipeViewHolder(private val binding: SwipeLayoutItemBinding) : RecyclerView.ViewHolder(binding.root)  {
+            fun bind(text: String, position: Int) {
+                binding.deleteTextView.text = "삭제"
+                binding.textView.text = text
+//
+                if(position %2 == 0) {
+                    binding.swipeLayout.isSwipeEnabled = false
+                }
+
+                binding.swipeLayout.isClickToClose = true
+                binding.swipeLayout.addSwipeListener(onSwipeListener)
+            }
+        }
+
+        private val onSwipeListener = object : SwipeLayout.SwipeListener{
+            override fun onStartOpen(layout: SwipeLayout?) {
+                // 선택한 뷰를 제외하고 닫음
+                mItemManger.closeAllExcept(layout)
+            }
+
+            override fun onOpen(layout: SwipeLayout?) {
+
+            }
+
+            override fun onStartClose(layout: SwipeLayout?) {
+
+            }
+
+            override fun onClose(layout: SwipeLayout?) {
+
+            }
+
+            override fun onUpdate(layout: SwipeLayout?, leftOffset: Int, topOffset: Int) {
+
+            }
+
+            override fun onHandRelease(layout: SwipeLayout?, xvel: Float, yvel: Float) {
+                mItemManger.closeAllItems()
+            }
+        }
     }
+
 
     private fun toast(text: String) {
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
