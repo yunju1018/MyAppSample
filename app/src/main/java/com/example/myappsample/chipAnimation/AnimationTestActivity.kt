@@ -1,12 +1,16 @@
 package com.example.myappsample.chipAnimation
 
+import android.animation.Animator
+import android.animation.ObjectAnimator
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myappsample.R
@@ -23,6 +27,7 @@ class AnimationTestActivity: AppCompatActivity() {
 
         testViewResize()
         testRecyclerViewResize()
+        testSlotMachine()
     }
 
     private fun testViewResize() {
@@ -45,6 +50,51 @@ class AnimationTestActivity: AppCompatActivity() {
         binding.recyclerview.apply {
             this.adapter = adapter
         }
+    }
+
+    private fun testSlotMachine() {
+
+        val value = dpToPx(this, 50)
+        val animatorSet = ObjectAnimator.ofFloat(binding.textView, "translationY", value.toFloat(), -value.toFloat())
+        animatorSet.duration = 100
+
+        var count = 1
+
+        // 숫자 갱신 및 애니메이션 설정
+        animatorSet.addListener(object : Animator.AnimatorListener{
+            override fun onAnimationStart(p0: Animator) {
+            }
+
+            override fun onAnimationEnd(p0: Animator) {
+                if (count < 9) {
+                    count++
+                    binding.textView.text = count.toString()
+                    animatorSet.start()
+                } else if (count == 9) {
+                    val newAnimatorSet = ObjectAnimator.ofFloat(binding.textView, "translationY", value.toFloat(), 0f)
+                    newAnimatorSet.duration = 100
+                    count++
+                    binding.textView.text = count.toString()
+                    newAnimatorSet.start()
+                }
+            }
+
+            override fun onAnimationCancel(p0: Animator) {
+            }
+
+            override fun onAnimationRepeat(p0: Animator) {
+            }
+        })
+
+        animatorSet.start()
+    }
+
+    private fun dpToPx(context: Context, dp: Int): Int {
+        return TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            dp.toFloat(),
+            context.resources.displayMetrics
+        ).toInt()
     }
 
     class AnimationAdapter(
