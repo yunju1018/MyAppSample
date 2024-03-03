@@ -108,13 +108,14 @@ class AnimationUtil {
         }
 
         @JvmStatic
-        fun progressAnimation(progressbar: ProgressBar, savedStarCount: Int) {
+        fun progressAnimation(progressbar: ProgressBar, savedStarCount: Int, textView: TextView) {
+            val duration = 1000L
             val multiply = 100
             progressbar.max = 12 * multiply
 
             // progressBar
             val progressAnimation: ValueAnimator = ObjectAnimator.ofInt(progressbar, "progress", 0, savedStarCount * multiply)
-            progressAnimation.duration = 1000
+            progressAnimation.duration = duration
             progressAnimation.addUpdateListener {
                 val animationValue = it.animatedValue as Int
                 progressbar.progress = animationValue
@@ -128,7 +129,7 @@ class AnimationUtil {
             val originWidth = progressbar.width
             val targetWidth = 0
             val widthAnimation = ValueAnimator.ofInt(originWidth, targetWidth)
-            widthAnimation.duration = 1000
+            widthAnimation.duration = duration
             widthAnimation.addUpdateListener {
                 val newWidth = it.animatedValue as Int
                 val params = progressbar.layoutParams
@@ -138,10 +139,47 @@ class AnimationUtil {
 
             // progressBar fadeOut
             val fadeOut: ValueAnimator = ObjectAnimator.ofFloat(progressbar, "alpha", 1f, 0.2f)
-            fadeOut.duration = 1000
+            fadeOut.duration = duration
+
+            // textUp
+            val value = textView.measuredHeight
+            val textViewAnimatorSet = ObjectAnimator.ofFloat(textView, "translationY", value.toFloat(), -value.toFloat())
+            val textChangeDuration = duration/savedStarCount
+            textViewAnimatorSet.duration = textChangeDuration
+
+            var count = 1
+
+            // 숫자 갱신 및 애니메이션 설정
+            textViewAnimatorSet.addListener(object : Animator.AnimatorListener{
+                override fun onAnimationStart(p0: Animator) {
+                    textView.text = count.toString()
+                }
+
+                override fun onAnimationEnd(p0: Animator) {
+                    if (count < savedStarCount-1) {
+                        count++
+                        textView.text = count.toString()
+                        textViewAnimatorSet.start()
+                        Log.d("yj", "count : $count")
+                    } else if (count == savedStarCount-1) {
+                        val newAnimatorSet = ObjectAnimator.ofFloat(textView, "translationY", value.toFloat(), 0f)
+                        newAnimatorSet.duration = textChangeDuration
+                        count++
+                        Log.d("yj", "count : $count")
+                        textView.text = count.toString()
+                        newAnimatorSet.start()
+                    }
+                }
+
+                override fun onAnimationCancel(p0: Animator) {
+                }
+
+                override fun onAnimationRepeat(p0: Animator) {
+                }
+            })
 
             val animatorSet = AnimatorSet()
-            animatorSet.play(progressAnimation)
+            animatorSet.play(progressAnimation).with(textViewAnimatorSet)
             animatorSet.play(delayAnimator).after(progressAnimation)
             animatorSet.play(widthAnimation).with(fadeOut).after(delayAnimator)
             animatorSet.startDelay = 500

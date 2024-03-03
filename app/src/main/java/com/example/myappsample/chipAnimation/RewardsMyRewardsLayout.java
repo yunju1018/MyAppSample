@@ -91,7 +91,7 @@ public class RewardsMyRewardsLayout extends RelativeLayout {
     public void setProgressBarAnimation() {
         enumUserGrade = eUserGrade.USER_GRADE_GOLD;
         invalidateUserGrade();
-        AnimationUtil.progressAnimation(binding.rewardProgressBar, 9);
+        AnimationUtil.progressAnimation(binding.rewardProgressBar, 3, binding.savedStarTextView);
     }
 
     // 회원 등급에 따라 색상 변경
