@@ -86,7 +86,73 @@
                 app:layout_constraintTop_toBottomOf="@id/slotLinearLayout"/>
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/slotRecyclerLayout"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:orientation="vertical"
+            android:background="@color/f7f7f7"
+            android:layout_marginTop="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/slotLinearLayout">
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/slotRecyclerView"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:textSize="24sp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/slotLinearLayout"
+                tools:listitem="@layout/item_slot_machine"/>
+        </LinearLayout>
 
+        <com.yy.mobile.rollingtextview.RollingTextView
+            android:id="@+id/rollingTextView1"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/slotRecyclerLayout"
+            android:textSize="25sp"
+            android:textColor="#1d1d1d"
+            android:textStyle="bold"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="1"
+            android:text="0"/>
+
+<!--        <com.yy.mobile.rollingtextview.RollingTextView-->
+<!--            android:id="@+id/rollingTextView2"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="20dp"-->
+<!--            app:layout_constraintLeft_toRightOf="@+id/rollingTextView1"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/slotRecyclerLayout"-->
+<!--            android:textSize="25sp"-->
+<!--            android:textColor="#1d1d1d"-->
+<!--            android:textStyle="bold"-->
+<!--            android:gravity="center"-->
+<!--            android:shadowDx="1"-->
+<!--            android:shadowDy="1"-->
+<!--            android:shadowRadius="1"-->
+<!--            android:text="0"/>-->
+
+<!--        <com.yy.mobile.rollingtextview.RollingTextView-->
+<!--            android:id="@+id/rollingTextView3"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="20dp"-->
+<!--            app:layout_constraintLeft_toRightOf="@+id/rollingTextView2"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/slotRecyclerLayout"-->
+<!--            android:textSize="25sp"-->
+<!--            android:textColor="#1d1d1d"-->
+<!--            android:textStyle="bold"-->
+<!--            android:gravity="center"-->
+<!--            android:shadowDx="1"-->
+<!--            android:shadowDy="1"-->
+<!--            android:shadowRadius="1"-->
+<!--            android:text="0"/>-->
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

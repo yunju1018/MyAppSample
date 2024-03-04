@@ -33,7 +33,10 @@ android {
 }
 
 dependencies {
-    /* SwipeLayout */
+    /*rollingTextView*/
+    implementation "com.github.YvesCheung.RollingText:RollingText:1.3.0"
+
+/* SwipeLayout */
     implementation 'com.daimajia.swipelayout:library:1.2.0@aar'
 
     implementation 'androidx.recyclerview:recyclerview:1.1.0'

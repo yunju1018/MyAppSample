@@ -1,21 +1,32 @@
 package com.example.myappsample.chipAnimation
 
 import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myappsample.R
 import com.example.myappsample.chipAnimation.AnimationUtil.Companion.animatedResize
 import com.example.myappsample.databinding.ActivityMotionTestBinding
+import com.yy.mobile.rollingtextview.CharOrder
+import com.yy.mobile.rollingtextview.strategy.Direction
+import com.yy.mobile.rollingtextview.strategy.Strategy
+
 
 class AnimationTestActivity: AppCompatActivity() {
     private val TAG = "yj : " + AnimationTestActivity::class.java.simpleName
@@ -28,6 +39,28 @@ class AnimationTestActivity: AppCompatActivity() {
         testViewResize()
         testRecyclerViewResize()
         testSlotMachine()
+        testSlotMachineRecyclerView()
+
+        val rollingTextView1 = binding.rollingTextView1
+        rollingTextView1.animationDuration = 1000
+        rollingTextView1.charStrategy = Strategy.CarryBitAnimation(Direction.SCROLL_UP)
+        rollingTextView1.addCharOrder(CharOrder.Number)
+        rollingTextView1.animationInterpolator = AccelerateDecelerateInterpolator()
+        rollingTextView1.setText("999")
+
+//        val rollingTextView2 = binding.rollingTextView2
+//        rollingTextView2.animationDuration = 1000
+//        rollingTextView2.charStrategy = Strategy.CarryBitAnimation(Direction.SCROLL_UP)
+//        rollingTextView2.addCharOrder(CharOrder.Number)
+//        rollingTextView2.animationInterpolator = AccelerateDecelerateInterpolator()
+//        rollingTextView2.setText("8")
+//
+//        val rollingTextView3 = binding.rollingTextView3
+//        rollingTextView3.animationDuration = 1000
+//        rollingTextView3.charStrategy = Strategy.CarryBitAnimation(Direction.SCROLL_UP)
+//        rollingTextView3.addCharOrder(CharOrder.Number)
+//        rollingTextView3.animationInterpolator = AccelerateDecelerateInterpolator()
+//        rollingTextView3.setText("9")
     }
 
     private fun testViewResize() {
@@ -161,6 +194,62 @@ class AnimationTestActivity: AppCompatActivity() {
             fun bind(message: String) {
                 textView.text = message
             }
+        }
+    }
+
+    private fun testSlotMachineRecyclerView() {
+        val data = (1..10).map { it.toString() }
+        val slotAdapter = SlotMachineAdapter(data)
+        binding.slotRecyclerView.apply {
+            adapter = slotAdapter
+        }
+
+        val smoothScroller: RecyclerView.SmoothScroller by lazy {
+            object : LinearSmoothScroller(this) {
+                override fun getVerticalSnapPreference() = SNAP_TO_START
+            }
+        }
+
+
+        smoothScroller.targetPosition = data.size - 1
+
+        binding.slotRecyclerView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                binding.slotRecyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+                Handler(Looper.getMainLooper()).postDelayed({
+                    val layoutManager = LinearLayoutManager(this@AnimationTestActivity)
+                    binding.slotRecyclerView.layoutManager = layoutManager
+
+                    // RecyclerView 마지막 위치로 스크롤
+                    binding.slotRecyclerView.post {
+                        binding.slotRecyclerView.smoothScrollToPosition(data.size-1)
+                    }
+                }, 1000)
+            }
+        })
+    }
+
+    class SlotMachineAdapter(private val data: List<String>) :
+        RecyclerView.Adapter<SlotMachineAdapter.ViewHolder>() {
+
+        inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+            val textView: TextView = itemView.findViewById(R.id.textView)
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_slot_machine, parent, false)
+            Log.d("yj", "createViewHolder")
+            return ViewHolder(view)
+        }
+
+        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+            holder.textView.text = data[position]
+        }
+
+        override fun getItemCount(): Int {
+            return data.size
         }
     }
 
