@@ -41,12 +41,9 @@ class AnimationTestActivity: AppCompatActivity() {
         testSlotMachine()
         testSlotMachineRecyclerView()
 
-        val rollingTextView1 = binding.rollingTextView1
-        rollingTextView1.animationDuration = 1000
-        rollingTextView1.charStrategy = Strategy.CarryBitAnimation(Direction.SCROLL_UP)
-        rollingTextView1.addCharOrder(CharOrder.Number)
-        rollingTextView1.animationInterpolator = AccelerateDecelerateInterpolator()
-        rollingTextView1.setText("999")
+       binding.button.setOnClickListener {
+           startRollingTextView()
+       }
 
 //        val rollingTextView2 = binding.rollingTextView2
 //        rollingTextView2.animationDuration = 1000
@@ -61,6 +58,16 @@ class AnimationTestActivity: AppCompatActivity() {
 //        rollingTextView3.addCharOrder(CharOrder.Number)
 //        rollingTextView3.animationInterpolator = AccelerateDecelerateInterpolator()
 //        rollingTextView3.setText("9")
+    }
+
+    private fun startRollingTextView() {
+        val rollingTextView1 = binding.rollingTextView1
+        rollingTextView1.animationDuration = 1000
+        rollingTextView1.charStrategy = Strategy.CarryBitAnimation(Direction.SCROLL_UP)
+        rollingTextView1.addCharOrder(CharOrder.Number)
+        rollingTextView1.animationInterpolator = AccelerateDecelerateInterpolator()
+        rollingTextView1.setText("0", false)
+        rollingTextView1.setText("999")
     }
 
     private fun testViewResize() {
