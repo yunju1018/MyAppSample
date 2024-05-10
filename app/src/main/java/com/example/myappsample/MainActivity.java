@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.example.myappsample.biometric.Biometric_Activity;
 import com.example.myappsample.chipAnimation.AnimationTestActivity;
 import com.example.myappsample.databinding.ActivityMainBinding;
+import com.example.myappsample.diffutil.DiffUtilTestActivity;
 import com.example.myappsample.popupwindow.PopupWindowActivity;
 import com.example.myappsample.collasingtoolbar.CollasingToolbarActivity;
 import com.example.myappsample.swipe.SwipeDeleteActivity;
@@ -69,6 +70,11 @@ public class MainActivity extends AppCompatActivity {
 
         binding.motion.setOnClickListener(view -> {
             Intent intent = new Intent(this, AnimationTestActivity.class);
+            startActivity(intent);
+        });
+
+        binding.diffUtil.setOnClickListener(view -> {
+            Intent intent = new Intent(this, DiffUtilTestActivity.class);
             startActivity(intent);
         });
 

@@ -78,6 +78,13 @@
             android:text="snackbar"
             android:visibility="visible" />
 
+        <Button
+            android:id="@+id/diffUtil"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="diffUtil"
+            android:visibility="visible" />
+
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:id="@+id/snackbarArea"
             android:layout_width="match_parent"
