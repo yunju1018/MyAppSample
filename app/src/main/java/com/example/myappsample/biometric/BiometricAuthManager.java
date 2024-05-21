@@ -2,12 +2,10 @@ package com.example.myappsample.biometric;
 
 import static androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
-import android.os.CancellationSignal;
-import android.security.keystore.KeyGenParameterSpec;
-import android.security.keystore.KeyProperties;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -17,23 +15,12 @@ import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
-import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
-import java.util.Objects;
 import java.util.concurrent.Executor;
-import java.util.function.LongUnaryOperator;
 
 import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
 
 /**
  * https://android-developers.googleblog.com/2019/10/one-biometric-api-over-all-android.html?m=1
@@ -42,8 +29,8 @@ import javax.crypto.SecretKey;
 public class BiometricAuthManager {
     private static final String TAG = "yj : " + BiometricAuthManager.class.getSimpleName();
     private OnBiometricAuthListener authListener;
-    private Context mContext;
-    private KeyManager keyManager;
+    private final Context mContext;
+    private final KeyManager keyManager = KeyManager.getInstance();
     private BiometricPrompt.CryptoObject bioCryptoObject;
 
     int count = 0;
@@ -144,16 +131,22 @@ public class BiometricAuthManager {
         Executor executor = ContextCompat.getMainExecutor(mContext);
         BiometricPrompt biometricPrompt = new BiometricPrompt((FragmentActivity) mContext, executor, authenticationCallback);
 
-//        keyManager.generateKey();
-//
-//        if (keyManager.cipherInit())
-//        {
-//            bioCryptoObject = new BiometricPrompt.CryptoObject(keyManager.getCipher());
-//            biometricPrompt.authenticate(createBiometricPrompt(), bioCryptoObject);
-//        }
-
-        biometricPrompt.authenticate(createBiometricPrompt());
-
+        if (keyManager.cipherInit()) {
+            bioCryptoObject = new BiometricPrompt.CryptoObject(keyManager.getCipher());
+            biometricPrompt.authenticate(createBiometricPrompt(), bioCryptoObject);
+        } else {
+            new AlertDialog.Builder(mContext)
+                    .setMessage("등록된 생체 인증 정보가 변경 되었습니다. \n 다시 인증 하시겠습니까?")
+                    .setPositiveButton("네", (dialogInterface, i) -> {
+                        keyManager.generateKey();
+                        if (keyManager.cipherInit()) {
+                            bioCryptoObject = new BiometricPrompt.CryptoObject(keyManager.getCipher());
+                            biometricPrompt.authenticate(createBiometricPrompt(), bioCryptoObject);
+                        }
+                    })
+                    .setNegativeButton("아니요", null)
+                    .show();
+        }
     }
 
     private final BiometricPrompt.AuthenticationCallback authenticationCallback = new BiometricPrompt.AuthenticationCallback() {

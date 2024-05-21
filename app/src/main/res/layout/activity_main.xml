@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="생체인증"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
         <Button
             android:id="@+id/swipeDelete"
