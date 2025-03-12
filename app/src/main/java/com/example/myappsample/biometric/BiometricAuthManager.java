@@ -6,6 +6,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -160,6 +162,7 @@ public class BiometricAuthManager {
         @Override
         public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
             super.onAuthenticationSucceeded(result);
+            vibrateDevice();
             authListener.authenticateSuccess();
         }
 
@@ -169,6 +172,16 @@ public class BiometricAuthManager {
             Log.d(TAG, "Authentication fail");
         }
     };
+
+    private void vibrateDevice() {
+        Vibrator vibrator = mContext.getSystemService(Vibrator.class);
+        // Android 8(API 26) 이전 버전 진동 강도 제어 불가
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            vibrator.vibrate(VibrationEffect.createOneShot(50L, 50));
+        } else {
+            vibrator.vibrate(100L);
+        }
+    }
 
     private BiometricPrompt.PromptInfo createBiometricPrompt() {
         // setAllowedAuthenticator : 인증자 유형 지정, 암호화 기반 인증

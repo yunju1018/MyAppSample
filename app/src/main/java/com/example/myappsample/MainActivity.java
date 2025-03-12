@@ -5,6 +5,7 @@ import androidx.databinding.DataBindingUtil;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.example.myappsample.biometric.Biometric_Activity;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
 
         binding.biometric.setOnClickListener(view -> {
             Intent intent = new Intent(this, Biometric_Activity.class);
@@ -83,5 +85,12 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "스낵바 액션 눌림", Toast.LENGTH_SHORT).show();
             }).show();
         });
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        // 캡처 방지 제거
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
     }
 }
